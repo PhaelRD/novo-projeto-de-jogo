@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://drn5mcr27bo8t"]
+
+[ext_resource type="Script" uid="uid://cirqddo3syeio" path="res://scenes/test_map.gd" id="5"]
+
+[sub_resource type="StandardMaterial3D" id="3"]
+albedo_color = Color(0.58, 0.53, 0.47, 1)
+
+[sub_resource type="PlaneMesh" id="2"]
+size = Vector2(40, 40)
+subdivide_width = 4
+subdivide_depth = 4
+
+[sub_resource type="BoxShape3D" id="4"]
+size = Vector3(40, 0.2, 40)
+
+[sub_resource type="Environment" id="1"]
+
+[node name="TestMap" type="Node3D" unique_id=549580603]
+script = ExtResource("5")
+
+[node name="Floor" type="MeshInstance3D" parent="." unique_id=181290305]
+material_override = SubResource("3")
+mesh = SubResource("2")
+
+[node name="FloorCollision" type="StaticBody3D" parent="." unique_id=1306175961]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
+[node name="FloorCollisionShape" type="CollisionShape3D" parent="FloorCollision" unique_id=13273694]
+shape = SubResource("4")
+
+[node name="DirectionalLight" type="DirectionalLight3D" parent="." unique_id=1339687261]
+transform = Transform3D(0.70710677, -0.61237246, 0.35355335, 0, 0.49999997, 0.86602545, -0.70710677, -0.61237246, 0.35355335, 0, 5, 0)
+light_energy = 1.1
+shadow_enabled = true
+directional_shadow_max_distance = 80.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1730214693]
+environment = SubResource("1")
+
+[node name="SpawnPoint" type="Marker3D" parent="." unique_id=1630233059]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

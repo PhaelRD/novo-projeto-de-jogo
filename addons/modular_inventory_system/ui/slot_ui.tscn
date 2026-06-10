@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://da470e7o50ff1"]
+
+[ext_resource type="Script" uid="uid://blqawl7hekaa1" path="res://addons/modular_inventory_system/ui/slot_ui.gd" id="1_tqcdp"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_g2w5v"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Theme" id="Theme_tqcdp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xrmth"]
+font_size = 13
+outline_size = 1
+outline_color = Color(0.215686, 0.215686, 0.215686, 1)
+shadow_size = 7
+shadow_color = Color(0.168627, 0, 0.00784314, 0.984314)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ru537"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.57078457, 0.5467032, 0.5320402, 1)
+border_blend = true
+
+[node name="InventorySlot" type="Control" unique_id=1997194000 groups=["inventory_drop_targets"]]
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_g2w5v")
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -32.5
+offset_top = -32.5
+offset_right = 32.5
+offset_bottom = 32.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_default_cursor_shape = 2
+script = ExtResource("1_tqcdp")
+
+[node name="BackgroundTexture" type="TextureRect" parent="." unique_id=637384455]
+visible = false
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 65.0
+mouse_filter = 2
+
+[node name="BackgroundColor" type="ColorRect" parent="." unique_id=1021725109]
+custom_minimum_size = Vector2(65, 65)
+layout_mode = 0
+offset_right = 65.0
+offset_bottom = 65.0
+mouse_filter = 2
+theme = SubResource("Theme_tqcdp")
+color = Color(0.32544094, 0.32544088, 0.32544088, 0.78431374)
+
+[node name="Placeholder" type="TextureRect" parent="." unique_id=895221751]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="." unique_id=340152836]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CountLabel" type="Label" parent="." unique_id=772399863]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 0.8
+offset_left = -40.0
+offset_top = -18.0
+offset_right = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+label_settings = SubResource("LabelSettings_xrmth")
+horizontal_alignment = 2
+vertical_alignment = 2
+clip_text = true
+
+[node name="QualityBadge" type="Label" parent="." unique_id=1441202236]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.8
+anchor_right = 1.0
+anchor_bottom = 0.8
+offset_left = -40.0
+offset_top = -18.0
+offset_right = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+label_settings = SubResource("LabelSettings_xrmth")
+horizontal_alignment = 2
+vertical_alignment = 2
+clip_text = true
+
+[node name="Panel" type="Panel" parent="." unique_id=521627541]
+visible = false
+layout_mode = 0
+
+[node name="Highlight" type="Panel" parent="." unique_id=1488464648]
+visible = false
+layout_mode = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ru537")
+
+[node name="DurabilityBar" type="Control" parent="." unique_id=104538578]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 2.0
+offset_top = 58.0
+offset_right = 62.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 0
+pivot_offset = Vector2(20, 20)
+mouse_filter = 1
+
+[node name="DurabilityBackground" type="ColorRect" parent="DurabilityBar" unique_id=1442308425]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+
+[node name="DurabilityFill" type="ColorRect" parent="DurabilityBar" unique_id=1472498017]
+custom_minimum_size = Vector2(60, 3)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -2.0
+offset_right = 30.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.42352942, 0.42352942, 0.42352942, 1)

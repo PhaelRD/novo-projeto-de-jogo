@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cs2ij85y7p7k3"]
+
+[ext_resource type="Script" uid="uid://rwaqw0hptxmb" path="res://addons/modular_inventory_system/ui/modular_panel.gd" id="1_pfcbe"]
+[ext_resource type="PackedScene" uid="uid://cc3f5ttr4vgki" path="res://addons/modular_inventory_system/ui/slot_ui.tscn" id="3_ddupx"]
+
+[node name="ModularInventoryPanel" type="Control" unique_id=1280698600 node_paths=PackedStringArray("grid_container")]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pfcbe")
+slot_scene = ExtResource("3_ddupx")
+grid_container = NodePath("Panel/GridContainer")
+
+[node name="Panel" type="Panel" parent="." unique_id=1454879345]
+custom_minimum_size = Vector2(350, 380)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = -190.0
+offset_right = 175.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChestTitle" type="Label" parent="Panel" unique_id=968266557]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -89.0
+offset_right = 89.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "chest_title_placeholder"
+
+[node name="GridContainer" type="GridContainer" parent="Panel" unique_id=432142283]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -162.5
+offset_top = -130.0
+offset_right = 162.5
+offset_bottom = 130.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+columns = 5
+
+[node name="Button" type="Button" parent="Panel" unique_id=729254058]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -58.0
+offset_bottom = 31.0
+grow_horizontal = 0
+text = "CLOSE"

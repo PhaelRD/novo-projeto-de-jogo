@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://d28ijyqa1yl3t"]
+
+[ext_resource type="Script" uid="uid://cjsfsbelbujse" path="res://addons/modular_inventory_system/world/dropped_item.gd" id="1_..."]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yu24x"]
+size = Vector3(0.23730469, 0.647583, 0.26342773)
+
+[node name="DroppedItem" type="RigidBody3D" unique_id=1932995670]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+collision_layer = 3
+gravity_scale = 2.0
+script = ExtResource("1_...")
+metadata/collision_preset_name = &"__custom__"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2055759427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007080078, 0.2008667, -0.060180664)
+shape = SubResource("BoxShape3D_yu24x")

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cmdpw33qfb7t7"]
+
+[ext_resource type="Texture2D" uid="uid://ujydaoojhw6" path="res://items/apple.png" id="1_dumep"]
+[ext_resource type="Script" uid="uid://buqjlq2vnh154" path="res://addons/modular_inventory_system/core/item_definition.gd" id="1_pv0u0"]
+
+[resource]
+script = ExtResource("1_pv0u0")
+id = "apple"
+display_name = "Apple"
+icon = ExtResource("1_dumep")
+metadata/_custom_type_script = "uid://buqjlq2vnh154"
