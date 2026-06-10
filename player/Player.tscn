@@ -182,7 +182,6 @@ billboard = 1
 sprite_frames = SubResource("3")
 animation = &"move_right"
 autoplay = "idle"
-frame_progress = 0.08905405
 
 [node name="InventoryComponent" type="Node" parent="." unique_id=1901451170]
 script = ExtResource("3_wnvi2")

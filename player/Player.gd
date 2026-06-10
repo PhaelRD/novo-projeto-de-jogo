@@ -27,14 +27,12 @@ func _ready() -> void:
 		
 	# Inicialização do Inventário
 	if inventory_component:
-		# Se o inventário já carregou antes do Player, adicionamos a maçã direto!
 		if inventory_component.inventory != null:
 			_on_inventory_ready(inventory_component.inventory)
-		# Se ainda não carregou, esperamos o sinal
 		else:
 			inventory_component.inventory_ready.connect(_on_inventory_ready)
 
-# --- Controles de Interface (NOVO) ---
+# --- Controles de Interface ---
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
@@ -49,9 +47,9 @@ func toggle_inventory() -> void:
 	inventory_panel.visible = is_open
 
 	if is_open:
-		InputMode.ui()      # Mostra o cursor do mouse, libera a câmera
+		InputMode.ui()      
 	else:
-		InputMode.game()    # Esconde o cursor, captura o mouse para a câmera
+		InputMode.game()    
 
 # --- Física e Movimentação ---
 func _physics_process(delta: float) -> void:
@@ -77,6 +75,7 @@ func _physics_process(delta: float) -> void:
 	velocity = _velocity
 	move_and_slide()
 
+	# Passamos o input_dir original aqui para saber se o jogador está apertando as teclas ou parado
 	_update_animation(input_dir)
 
 # --- Funções de Callback (Sinais) ---
@@ -109,21 +108,31 @@ func _transform_input_by_camera(input_dir: Vector3) -> Vector3:
 		
 	return Vector3.ZERO
 
-# --- Funções de Animação ---
+# --- Funções de Animação (MODIFICADO) ---
 func _update_animation(direction: Vector3) -> void:
 	if not _animated_sprite: return
 	var frames: SpriteFrames = _animated_sprite.sprite_frames
 	if not frames: return
 	
+	# NOVO: Se o jogador não estiver aplicando nenhum comando de movimento (parado)
+	if direction == Vector3.ZERO:
+		_animated_sprite.stop() # Pausa o sprite imediatamente
+		_animated_sprite.frame = 0 # Fixa no primeiro frame (índice 0) da animação atual
+		return # Sai da função para ignorar a troca para idle/default
+
+	# Se houver movimento, escolhe a animação baseada na direção
 	var desired_anim: String = _select_animation(direction, frames)
+	
 	if desired_anim != _current_animation:
 		_animated_sprite.play(desired_anim)
 		_current_animation = desired_anim
+	else:
+		# Se já está na animação correta mas estava pausada (porque o player tinha parado), volta a dar play
+		if not _animated_sprite.is_playing():
+			_animated_sprite.play()
 
 func _select_animation(direction: Vector3, frames: SpriteFrames) -> String:
-	if direction == Vector3.ZERO:
-		return _fallback(frames, ["idle", "default"])
-
+	# Como tratamos o Vector3.ZERO na função de cima, essa parte lida apenas com direções ativas
 	var horiz: float = abs(direction.x)
 	var vert: float = abs(direction.z)
 	var target_anim_name: String = ""
@@ -144,8 +153,6 @@ func _fallback(frames: SpriteFrames, candidates: Array) -> String:
 
 # --- Função de Coleta de Itens ---
 func _on_pickup_area_body_entered(body: Node3D) -> void:
-	print("Encostei em algo: ", body.name) # <--- ADICIONE ESTA LINHA
-	
 	if body.is_in_group("dropped_item"):
 		var item_def = body.item_
 		var amount = body.count
