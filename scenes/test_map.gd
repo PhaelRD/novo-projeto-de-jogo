@@ -22,5 +22,5 @@ func _ready() -> void:
 	add_child(camera_instance)
 	# --- A MÁGICA ACONTECE AQUI ---
 	# Como o mapa criou os dois, ele mesmo faz a conexão!
-	player_instance._follow_camera = camera_instance
+	player_instance.movement._follow_camera = camera_instance
 	camera_instance._target = player_instance
