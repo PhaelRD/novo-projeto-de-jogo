@@ -8,5 +8,5 @@ script = ExtResource("1_t6ah7")
 id = "madeira"
 display_name = "Madeira"
 icon = ExtResource("1_5grvk")
-max_stack_size = 64
+max_stack_size = 99
 metadata/_custom_type_script = "uid://buqjlq2vnh154"

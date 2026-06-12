@@ -21,6 +21,7 @@ TreeWatcher="*uid://byto6ql37kfie"
 DragDropSystem="*uid://by65p4vigqgcg"
 InputMode="*uid://c4kxikxn060f4"
 UICoordinator="*uid://ci3nauoorm6et"
+SaveManager="*uid://bt2hwre3tov1d"
 
 [editor_plugins]
 

@@ -16,30 +16,30 @@ class_name Player
 @onready var animated_sprite = $AnimatedSprite3D
 
 func _ready() -> void:
-	# Liga as animações
+	# 1. Entra no grupo de save!
+	add_to_group("persist")
+	
+	# 2. Liga as animações
 	animations.sprite = animated_sprite
 	animations.setup()
 	
-	# Inicializa o inventário
+	# 3. Inicializa o inventário
 	if inventory_component:
 		if inventory_component.inventory != null:
 			_on_inventory_ready(inventory_component.inventory)
 		else:
 			inventory_component.inventory_ready.connect(_on_inventory_ready)
 			
-	# Conecta o sinal visual da Hotbar para destacar o item selecionado
+	# 4. Conecta o sinal visual da Hotbar
 	if hotbar:
 		hotbar.selection_changed.connect(_atualizar_visual_hotbar)
-		# Dá um pequeno atraso apenas na inicialização para garantir que a UI carregou
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# 1. Botão de abrir/fechar inventário
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
 		get_viewport().set_input_as_handled()
 
-	# 2. Seleção de itens na Hotbar pelos números
 	if hotbar:
 		for i in range(1, 10):
 			var action_name = "hotbar_" + str(i)
@@ -48,7 +48,6 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-	# 3. Botão esquerdo do mouse para usar ferramentas
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			if _is_holding_axe():
@@ -69,13 +68,8 @@ func _physics_process(delta: float) -> void:
 		Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
 	).normalized()
 
-	# 1. O MovementComponent processa a física e devolve para onde o player realmente foi
 	var real_move_dir = movement.handle_movement(self, input_dir, delta)
-	
-	# 2. O AnimationComponent atualiza a arte baseada no input bruto
 	animations.update_animation(input_dir)
-	
-	# 3. O InteractionComponent atualiza o grid baseado na direção real
 	interaction.update_grid(global_position, real_move_dir)
 
 func _is_holding_axe() -> bool:
@@ -89,6 +83,7 @@ func _is_holding_axe() -> bool:
 	return slot_data and slot_data.item == starting_axe
 
 func _on_inventory_ready(inv):
+	# Adiciona o Machado inicial se ele estiver configurado no painel
 	if starting_axe: inv.add_item(starting_axe, 1)
 
 func _on_pickup_area_body_entered(body: Node3D) -> void:
@@ -99,18 +94,59 @@ func _on_pickup_area_body_entered(body: Node3D) -> void:
 		elif remaining < body.count:
 			body.count = remaining
 
-# --- Função Visual da Hotbar ---
 func _atualizar_visual_hotbar(novo_indice: int) -> void:
 	if not hotbar or not hotbar.slots_container: return
-	
 	var slots = hotbar.slots_container.get_children()
-	
 	for i in range(slots.size()):
 		var slot_ui = slots[i]
-		
 		if i == novo_indice:
-			# Destaca o slot selecionado (amarelo claro)
 			slot_ui.modulate = Color(1.2, 1.2, 0.5) 
 		else:
-			# Retorna os outros slots para a cor normal
 			slot_ui.modulate = Color(1.0, 1.0, 1.0)
+
+# ==========================================
+# SISTEMA DE SAVE / LOAD DO PLAYER
+# ==========================================
+
+func get_save_data() -> Dictionary:
+	var inv_data = []
+	var inv: Inventory = inventory_component.get_inventory()
+	
+	if inv:
+		# Varre todos os slots do inventário
+		for i in range(inv.slots.size()):
+			var slot = inv.slots[i]
+			# Se tiver um item naquele slot, nós salvamos o caminho do arquivo dele
+			if slot and slot.item:
+				inv_data.append({
+					"index": i,
+					"item_path": slot.item.resource_path, 
+					"count": slot.count
+				})
+				
+	return {
+		"pos_x": global_position.x,
+		"pos_y": global_position.y,
+		"pos_z": global_position.z,
+		"inventory": inv_data
+	}
+
+func load_save_data(dados: Dictionary) -> void:
+	# 1. Devolve o Player para a coordenada onde ele parou
+	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
+	
+	# 2. Devolve os itens no inventário
+	if dados.has("inventory"):
+		var inv: Inventory = inventory_component.get_inventory()
+		if inv:
+			inv.clear() # Limpa o inventário atual antes de carregar o save
+			
+			for item_data in dados["inventory"]:
+				# Carrega o recurso `.tres` original de volta pra memória
+				var item_res = load(item_data["item_path"]) as ItemDefinition
+				if item_res:
+					# Bota exatamente na gaveta em que o jogador deixou
+					inv.set_slot(item_data["index"], item_res, item_data["count"])
+					
+			# Força a interface a atualizar pra mostrar os novos itens
+			if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
