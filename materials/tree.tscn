@@ -9,12 +9,15 @@
 [node name="Tree" type="StaticBody3D" unique_id=2004484642 groups=["interactable"]]
 script = ExtResource("1_uy8cy")
 wood_item = ExtResource("2_28ad7")
-
-[node name="Sprite3D" type="Sprite3D" parent="." unique_id=268581741]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-billboard = 2
-texture = ExtResource("1_16q7b")
+seed_item_path = "uid://c6b2btv3phs27"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=357271246]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CylinderShape3D_uy8cy")
+
+[node name="Pivot" type="Node3D" parent="." unique_id=1155713879]
+
+[node name="Sprite3D" type="Sprite3D" parent="Pivot" unique_id=268581741]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+billboard = 2
+texture = ExtResource("1_16q7b")

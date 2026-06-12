@@ -3,6 +3,7 @@ class_name Player
 
 # --- Exportações ---
 @export var starting_axe: ItemDefinition 
+# (As variáveis de semente e árvore foram removidas daqui!)
 @export var toggle_action: StringName = &"toggle_inventory"
 
 # --- Componentes e Nós ---
@@ -16,21 +17,16 @@ class_name Player
 @onready var animated_sprite = $AnimatedSprite3D
 
 func _ready() -> void:
-	# 1. Entra no grupo de save!
 	add_to_group("persist")
-	
-	# 2. Liga as animações
 	animations.sprite = animated_sprite
 	animations.setup()
 	
-	# 3. Inicializa o inventário
 	if inventory_component:
 		if inventory_component.inventory != null:
 			_on_inventory_ready(inventory_component.inventory)
 		else:
 			inventory_component.inventory_ready.connect(_on_inventory_ready)
 			
-	# 4. Conecta o sinal visual da Hotbar
 	if hotbar:
 		hotbar.selection_changed.connect(_atualizar_visual_hotbar)
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
@@ -48,10 +44,22 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
+	# --- NOVA LÓGICA DE FERRAMENTAS E PLANTIO (DATA-DRIVEN) ---
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			if _is_holding_axe():
-				interaction.use_axe(animated_sprite)
+			var slot = _get_held_slot()
+			
+			if slot and slot.item:
+				# 1. Continua checando o machado (porque ferramentas funcionam diferente)
+				if slot.item == starting_axe:
+					interaction.use_axe(animated_sprite)
+					
+				# 2. A MÁGICA: O item tem uma cena de posicionamento?
+				elif slot.item.placement_scene != null:
+					# Então mande plantar a cena que o PRÓPRIO ITEM disser que é a dele!
+					if interaction.plant_seed(slot.item.placement_scene):
+						inventory_component.get_inventory().remove_item(slot.item, 1)
+						if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
 
 func toggle_inventory() -> void:
 	if not inventory_panel: return
@@ -72,18 +80,13 @@ func _physics_process(delta: float) -> void:
 	animations.update_animation(input_dir)
 	interaction.update_grid(global_position, real_move_dir)
 
-func _is_holding_axe() -> bool:
-	if not hotbar or not inventory_component: return false
+func _get_held_slot() -> SlotData:
+	if not hotbar or not inventory_component: return null
 	var inv: Inventory = inventory_component.get_inventory()
-	if not inv: return false
-	
-	var selected_index = hotbar.get_selected_global_index()
-	var slot_data = inv.get_slot(selected_index)
-	
-	return slot_data and slot_data.item == starting_axe
+	if not inv: return null
+	return inv.get_slot(hotbar.get_selected_global_index())
 
 func _on_inventory_ready(inv):
-	# Adiciona o Machado inicial se ele estiver configurado no painel
 	if starting_axe: inv.add_item(starting_axe, 1)
 
 func _on_pickup_area_body_entered(body: Node3D) -> void:
@@ -113,10 +116,8 @@ func get_save_data() -> Dictionary:
 	var inv: Inventory = inventory_component.get_inventory()
 	
 	if inv:
-		# Varre todos os slots do inventário
 		for i in range(inv.slots.size()):
 			var slot = inv.slots[i]
-			# Se tiver um item naquele slot, nós salvamos o caminho do arquivo dele
 			if slot and slot.item:
 				inv_data.append({
 					"index": i,
@@ -132,21 +133,15 @@ func get_save_data() -> Dictionary:
 	}
 
 func load_save_data(dados: Dictionary) -> void:
-	# 1. Devolve o Player para a coordenada onde ele parou
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
 	
-	# 2. Devolve os itens no inventário
 	if dados.has("inventory"):
 		var inv: Inventory = inventory_component.get_inventory()
 		if inv:
-			inv.clear() # Limpa o inventário atual antes de carregar o save
-			
+			inv.clear() 
 			for item_data in dados["inventory"]:
-				# Carrega o recurso `.tres` original de volta pra memória
 				var item_res = load(item_data["item_path"]) as ItemDefinition
 				if item_res:
-					# Bota exatamente na gaveta em que o jogador deixou
 					inv.set_slot(item_data["index"], item_res, item_data["count"])
 					
-			# Força a interface a atualizar pra mostrar os novos itens
 			if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
