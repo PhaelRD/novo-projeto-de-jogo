@@ -2,25 +2,24 @@ extends StaticBody3D
 
 # --- Exportações ---
 @export var wood_item: ItemDefinition 
-
-# MUDANÇA AQUI: Agora guardamos apenas o caminho (texto) da semente
 @export_file("*.tres") var seed_item_path: String 
-
 @export var max_health: int = 10 
 @export var drop_amount: int = 2 
 
-# --- Referências de Nós ---
-@onready var pivot: Node3D = $Pivot # O eixo de crescimento (colado no chão)
-@onready var visual_node: Sprite3D = $Pivot/Sprite3D # A imagem da árvore (para tremer)
+# --- Referências dos 3 Sprites ---
+@onready var sprite_seed: Sprite3D = $SpriteSeed
+@onready var sprite_sprout: Sprite3D = $SpriteSprout
+@onready var sprite_adult: Sprite3D = $SpriteAdult
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D 
 
 var dropped_item_scene = preload("res://addons/modular_inventory_system/world/dropped_item.tscn") 
 
 var _current_health: int
-var _original_visual_pos: Vector3
 var _shake_tween: Tween 
 
-# --- LÓGICA DE CRESCIMENTO ---
+# MUDANÇA IMPORTANTE: Guarda a posição individual de CADA sprite!
+var _original_positions: Dictionary = {}
+
 var growth_stage: int = 2 # 0 = Semente, 1 = Broto, 2 = Adulta
 var grow_timer: Timer
 
@@ -30,9 +29,10 @@ func _ready() -> void:
 	
 	_current_health = max_health
 	
-	# Salva a posição original da imagem (agora em relação ao Pivot)
-	if visual_node:
-		_original_visual_pos = visual_node.position
+	# Regista a posição exata em que você deixou cada imagem no Editor
+	if sprite_seed: _original_positions[sprite_seed] = sprite_seed.position
+	if sprite_sprout: _original_positions[sprite_sprout] = sprite_sprout.position
+	if sprite_adult: _original_positions[sprite_adult] = sprite_adult.position
 		
 	_atualizar_visual_crescimento()
 	
@@ -40,7 +40,6 @@ func _ready() -> void:
 		_iniciar_crescimento()
 
 func hit_with_axe(damage: int) -> void:
-	# AGORA O JOGADOR PODE BATER EM QUALQUER ESTÁGIO!
 	_current_health -= damage
 	_shake_tree()
 	
@@ -48,19 +47,28 @@ func hit_with_axe(damage: int) -> void:
 		_chop_down()
 
 func _shake_tree() -> void:
+	# Descobre qual dos 3 sprites está visível agora para tremer só ele
+	var visual_node: Sprite3D = null
+	if growth_stage == 0: visual_node = sprite_seed
+	elif growth_stage == 1: visual_node = sprite_sprout
+	elif growth_stage == 2: visual_node = sprite_adult
+	
 	if not visual_node: return
+	
 	if _shake_tween and _shake_tween.is_valid():
 		_shake_tween.kill()
 		
-	visual_node.position = _original_visual_pos
+	# Puxa a posição base daquele sprite específico
+	var base_pos = _original_positions.get(visual_node, Vector3.ZERO)
+	visual_node.position = base_pos
+	
 	_shake_tween = create_tween()
-	_shake_tween.tween_property(visual_node, "position:x", _original_visual_pos.x + 0.08, 0.04)
-	_shake_tween.tween_property(visual_node, "position:x", _original_visual_pos.x - 0.08, 0.04)
-	_shake_tween.tween_property(visual_node, "position:x", _original_visual_pos.x + 0.05, 0.04)
-	_shake_tween.tween_property(visual_node, "position:x", _original_visual_pos.x, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + 0.08, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x - 0.08, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + 0.05, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x, 0.04)
 
 func _chop_down() -> void:
-	# SÓ DROPA ITENS SE A ÁRVORE FOR ADULTA
 	if growth_stage == 2:
 		if wood_item and dropped_item_scene:
 			for i in range(drop_amount):
@@ -70,7 +78,6 @@ func _chop_down() -> void:
 				get_tree().current_scene.add_child(drop)
 				drop.global_position = global_position + Vector3(randf_range(-0.5, 0.5), 0.5, randf_range(-0.5, 0.5))
 				
-		# MUDANÇA AQUI: Carrega a semente na memória apenas no momento do drop
 		if seed_item_path != "" and dropped_item_scene:
 			var seed_item = load(seed_item_path) as ItemDefinition
 			if seed_item:
@@ -80,21 +87,24 @@ func _chop_down() -> void:
 				get_tree().current_scene.add_child(drop_seed)
 				drop_seed.global_position = global_position + Vector3(0, 0.6, 0)
 			
-	# Em qualquer estágio, ela some se a vida chegar a zero
 	queue_free()
 
-# --- SISTEMA DE CRESCIMENTO ---
+# --- SISTEMA DE CRESCIMENTO (Troca de Sprites) ---
 func _atualizar_visual_crescimento() -> void:
-	if not pivot: return # Agora nós checamos e escalamos o Pivot!
+	# 1. Esconde todos primeiro
+	if sprite_seed: sprite_seed.visible = false
+	if sprite_sprout: sprite_sprout.visible = false
+	if sprite_adult: sprite_adult.visible = false
 	
+	# 2. Liga apenas o correto e ajusta a colisão
 	if growth_stage == 0:
-		pivot.scale = Vector3(0.3, 0.3, 0.3) 
+		if sprite_seed: sprite_seed.visible = true
 		if collision_shape: collision_shape.disabled = true
 	elif growth_stage == 1:
-		pivot.scale = Vector3(0.6, 0.6, 0.6) 
+		if sprite_sprout: sprite_sprout.visible = true
 		if collision_shape: collision_shape.disabled = false
 	else:
-		pivot.scale = Vector3(1.0, 1.0, 1.0) 
+		if sprite_adult: sprite_adult.visible = true
 		if collision_shape: collision_shape.disabled = false
 
 func _iniciar_crescimento() -> void:
@@ -107,10 +117,7 @@ func _iniciar_crescimento() -> void:
 
 func _crescer() -> void:
 	growth_stage += 1
-	
-	# Quando ela cresce, ela renova a vida para ficar inteira na próxima fase!
 	_current_health = max_health 
-	
 	_atualizar_visual_crescimento()
 	
 	if growth_stage >= 2:
