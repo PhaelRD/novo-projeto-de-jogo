@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://5xh686hou3yl"
-path="res://.godot/imported/machado1.png-c368952d9a13e94fd66249ca0f102ee0.ctex"
+path="res://.godot/imported/machado1.png-8ed77add4000b5f6b9f3dd8b9070c042.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://items/machado1.png"
-dest_files=["res://.godot/imported/machado1.png-c368952d9a13e94fd66249ca0f102ee0.ctex"]
+source_file="res://items/machado/machado1.png"
+dest_files=["res://.godot/imported/machado1.png-8ed77add4000b5f6b9f3dd8b9070c042.ctex"]
 
 [params]
 

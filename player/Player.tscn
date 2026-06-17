@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bwegafw1m45k7" path="res://player/Player.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://btloc0008vmwj" path="res://player/trainer_PROFESSOR.png" id="2_v6fml"]
-[ext_resource type="Resource" uid="uid://c4jytv4m8cpwd" path="res://items/machado1.tres" id="3_mhpjh"]
+[ext_resource type="Resource" uid="uid://c4jytv4m8cpwd" path="res://items/machado/machado1.tres" id="3_mhpjh"]
 [ext_resource type="Script" uid="uid://bnfwaprwdmh1a" path="res://addons/modular_inventory_system/core/inventory_component.gd" id="3_wnvi2"]
 [ext_resource type="Script" uid="uid://rwaqw0hptxmb" path="res://addons/modular_inventory_system/ui/modular_panel.gd" id="4_x8kxw"]
 [ext_resource type="Script" uid="uid://clejp5ovnaqad" path="res://addons/modular_inventory_system/ui/ItemTooltip.gd" id="5_aqcbf"]
 [ext_resource type="Script" uid="uid://xf1twal6dn3g" path="res://addons/modular_inventory_system/ui/modular_hotbar.gd" id="6_aqcbf"]
+[ext_resource type="Script" uid="uid://bc463qt5ulfkv" path="res://player/stamina_bar.gd" id="8_5qrx2"]
 [ext_resource type="Script" uid="uid://4jhop52nu5lc" path="res://player/interaction_component.gd" id="9_5qrx2"]
 [ext_resource type="Script" uid="uid://bh4oamdp5h73q" path="res://player/movement_component.gd" id="10_b32pr"]
 [ext_resource type="Script" uid="uid://dibfd4rhn2ci7" path="res://player/animation_component.gd" id="11_hbkom"]
@@ -161,6 +162,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5qrx2"]
+bg_color = Color(1, 0.7294118, 0, 1)
+
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_06mnu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_06mnu"]
@@ -260,6 +264,16 @@ offset_top = 580.0
 offset_right = 445.0
 offset_bottom = 620.0
 mouse_filter = 2
+
+[node name="StaminaBar" type="ProgressBar" parent="CanvasLayer" unique_id=917091008]
+offset_left = 1122.0
+offset_top = 522.0
+offset_right = 1147.0
+offset_bottom = 642.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_5qrx2")
+fill_mode = 3
+show_percentage = false
+script = ExtResource("8_5qrx2")
 
 [node name="PickupArea" type="Area3D" parent="." unique_id=1433529411]
 collision_layer = 0
