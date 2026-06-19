@@ -3,6 +3,7 @@ class_name Player
 
 # --- Exportações ---
 @export var starting_axe: ItemDefinition 
+# (As variáveis de semente e árvore foram removidas daqui!)
 @export var toggle_action: StringName = &"toggle_inventory"
 
 # --- Componentes e Nós ---
@@ -14,9 +15,6 @@ class_name Player
 @onready var animations: AnimationComponent = $AnimationComponent
 @onready var interaction: InteractionComponent = $InteractionComponent
 @onready var animated_sprite = $AnimatedSprite3D
-
-# MUDANÇA: Agora apontamos para a classe "StaminaBar" que acabámos de criar!
-@onready var stamina_bar: StaminaBar = $CanvasLayer/StaminaBar
 
 func _ready() -> void:
 	add_to_group("persist")
@@ -46,41 +44,22 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-	# --- LÓGICA DE AÇÕES E STAMINA ---
+	# --- NOVA LÓGICA DE FERRAMENTAS E PLANTIO (DATA-DRIVEN) ---
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			var slot = _get_held_slot()
 			
 			if slot and slot.item:
-				# 1. É UM MACHADO / FERRAMENTA?
-				if slot.item == starting_axe or slot.item is ToolItemDefinition:
-					var cost = 5 
-					var dmg = 1  
+				# 1. Continua checando o machado (porque ferramentas funcionam diferente)
+				if slot.item == starting_axe:
+					interaction.use_axe(animated_sprite)
 					
-					if slot.item is ToolItemDefinition:
-						cost = slot.item.stamina_cost
-						dmg = slot.item.damage
-						
-					# Pergunta à barra de stamina se temos energia
-					if stamina_bar.has_energy(cost):
-						stamina_bar.consume(cost) # Dá a ordem para gastar
-						interaction.use_axe(animated_sprite, dmg)
-					else:
-						print("Estou muito cansado para usar ferramentas...")
-						
-				# 2. É UMA SEMENTE / ITEM COLOCÁVEL?
+				# 2. A MÁGICA: O item tem uma cena de posicionamento?
 				elif slot.item.placement_scene != null:
-					var cost_to_plant = 2 
-					
-					# Pergunta à barra de stamina se temos energia
-					if stamina_bar.has_energy(cost_to_plant):
-						# Se conseguiu plantar no chão correto...
-						if interaction.plant_seed(slot.item):
-							stamina_bar.consume(cost_to_plant) # Só gasta se o plantio deu certo!
-							inventory_component.get_inventory().remove_item(slot.item, 1)
-							if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
-					else:
-						print("Estou muito cansado para plantar...")
+					# Então mande plantar a cena que o PRÓPRIO ITEM disser que é a dele!
+					if interaction.plant_seed(slot.item.placement_scene):
+						inventory_component.get_inventory().remove_item(slot.item, 1)
+						if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
 
 func toggle_inventory() -> void:
 	if not inventory_panel: return
@@ -150,17 +129,11 @@ func get_save_data() -> Dictionary:
 		"pos_x": global_position.x,
 		"pos_y": global_position.y,
 		"pos_z": global_position.z,
-		"inventory": inv_data,
-		# Pede o save data diretamente à barra!
-		"stamina": stamina_bar.get_save_data() if stamina_bar else 100
+		"inventory": inv_data
 	}
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
-	
-	# Manda a barra carregar os seus próprios dados!
-	if dados.has("stamina") and stamina_bar:
-		stamina_bar.load_save_data(dados["stamina"])
 	
 	if dados.has("inventory"):
 		var inv: Inventory = inventory_component.get_inventory()

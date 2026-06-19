@@ -1,6 +1,8 @@
 extends Node3D
 class_name InteractionComponent
 
+@export var valid_soil_coords: Array[Vector2i] = [Vector2i(1, 2)]
+
 @onready var interaction_area: Area3D = $Area3D
 var _facing_dir: Vector3 = Vector3.FORWARD
 
@@ -15,23 +17,18 @@ func update_grid(player_pos: Vector3, move_dir: Vector3) -> void:
 	target_pos.y = player_pos.y - 0.4
 	global_position = target_pos
 
-func use_axe(sprite: AnimatedSprite3D, damage: int = 1) -> void:
-	# Toca a animação mesmo se bater no vento
-	if sprite and sprite.sprite_frames.has_animation("attack"):
-		sprite.play("attack")
-		
+func use_axe(sprite: AnimatedSprite3D) -> void:
 	if not interaction_area: return
 	
-	# Verifica se acertou em alguma árvore ou objeto interativo
 	var bodies = interaction_area.get_overlapping_bodies()
 	for body in bodies:
 		if body.is_in_group("interactable") and body.has_method("hit_with_axe"):
-			body.hit_with_axe(damage) # Usa o dano da ferramenta!
+			body.hit_with_axe(1)
+			if sprite and sprite.sprite_frames.has_animation("attack"):
+				sprite.play("attack")
 			break
 
-# MUDANÇA: Agora recebemos o ItemDefinition inteiro em vez de só a cena!
-func plant_seed(item_data: ItemDefinition) -> bool:
-	var tree_scene = item_data.placement_scene
+func plant_seed(tree_scene: PackedScene) -> bool:
 	if not tree_scene: return false
 	
 	# 1. Verifica objetos físicos na frente
@@ -52,7 +49,9 @@ func plant_seed(item_data: ItemDefinition) -> bool:
 		if tile_map.runtime_api:
 			var tile_info = null
 			
-			# 2. O SCANNER VERTICAL
+			# 2. O SCANNER VERTICAL: 
+			# Testa as alturas a partir de 1 metro acima do jogador até 1 metro abaixo dele.
+			# O primeiro bloco que ele encontrar descendo será o chão verdadeiro!
 			var player_y = get_parent().global_position.y
 			for offset_y in [1.0, 0.5, 0.0, -0.5, -1.0, -1.5]:
 				var test_pos = global_position
@@ -61,6 +60,7 @@ func plant_seed(item_data: ItemDefinition) -> bool:
 				var check = tile_map.runtime_api.find_tile(test_pos, 0) # 0 = FLOOR
 				if check != null:
 					tile_info = check
+					# Achámos o chão mais alto! Cravamos a altura exata desse bloco.
 					base_y = round(test_pos.y) 
 					break
 			
@@ -68,11 +68,9 @@ func plant_seed(item_data: ItemDefinition) -> bool:
 				print("Você não pode plantar no vazio!")
 				return false
 				
-			# MUDANÇA DA SEMENTE: Lê as regras direto do arquivo do item!
-			if item_data is SeedItemDefinition:
-				if not tile_info.atlas_coords in item_data.valid_soil_coords:
-					print("Esta semente não pode ser plantada aqui! Coordenada atual: ", tile_info.atlas_coords)
-					return false
+			if not tile_info.atlas_coords in valid_soil_coords:
+				print("Você só pode plantar em blocos de terra! Coordenada atual: ", tile_info.atlas_coords)
+				return false
 				
 	else:
 		print("Nenhum mapa (terrain) encontrado nesta cena.")
@@ -86,7 +84,7 @@ func plant_seed(item_data: ItemDefinition) -> bool:
 	
 	get_tree().current_scene.add_child(new_tree)
 	
-	# Puxa a altura (Y) exata do bloco que o Scanner encontrou
+	# MÁGICA FINAL: Usa o X e Z da mira, mas puxa a altura (Y) exata do bloco que o Scanner encontrou!
 	new_tree.global_position = Vector3(self.global_position.x, base_y, self.global_position.z)
 	
 	if new_tree.has_method("_atualizar_visual_crescimento"):
