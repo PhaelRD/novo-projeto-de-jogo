@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SeedItemDefinition" format=3 uid="uid://c6b2btv3phs27"]
+
+[ext_resource type="Texture2D" uid="uid://vl2sq3uv8bxa" path="res://items/seed_tree/semente.png" id="1_rchyl"]
+[ext_resource type="PackedScene" uid="uid://dnirhstm83bik" path="res://materials/tree/tree.tscn" id="2_oyser"]
+[ext_resource type="Script" uid="uid://bm4kbj25tg4sy" path="res://items/seed_tree/seed_item_definition.gd" id="3_2e78w"]
+
+[resource]
+script = ExtResource("3_2e78w")
+id = "semente"
+display_name = "Semente"
+icon = ExtResource("1_rchyl")
+max_stack_size = 99
+placement_scene = ExtResource("2_oyser")
+metadata/_custom_type_script = "uid://buqjlq2vnh154"
