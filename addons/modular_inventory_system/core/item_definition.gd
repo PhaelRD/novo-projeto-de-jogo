@@ -50,15 +50,8 @@ func has_tag(tag: String) -> bool:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		_cached_logic = null
-		
-func get_meta_value(key: String, default = null):
-	return custom_metadata.get(key, default)
 
-func set_meta_value(key: String, value) -> void:
-	custom_metadata[key] = value
-
-func is_equipment_type(type: int) -> bool:
-	return equipment_type >= 0 and equipment_type == type
-
-func _to_string() -> String:
-	return "%s [%s]" % [display_name, id]
+# --- NOVA FUNÇÃO VIRTUAL PARA INTERAÇÃO ---
+func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
+	# Retorna true se o item foi usado com sucesso (permitindo atualizar UI ou consumir)
+	return false

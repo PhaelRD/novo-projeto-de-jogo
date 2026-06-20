@@ -286,6 +286,7 @@ collision_layer = 0
 shape = SubResource("CylinderShape3D_06mnu")
 
 [node name="InteractionComponent" type="Node3D" parent="." unique_id=478816718]
+visible = false
 script = ExtResource("9_5qrx2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="InteractionComponent" unique_id=1005089652]

@@ -47,45 +47,23 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-	# --- LÓGICA DE AÇÕES E STAMINA (BOTÃO ESQUERDO) ---
+	# --- INTERAÇÃO COM ITENS (ESTRUTURA LIMPA) ---
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			var slot = _get_held_slot()
 			
-			if slot and slot.item:
-				# 1. É UM MACHADO / FERRAMENTA?
-				if slot.item == starting_axe or slot.item is ToolItemDefinition:
-					var cost = 5 
-					var dmg = 1  
+			if slot and slot.item and slot.item.has_method("use"):
+				var target_info = interaction.get_target_info()
+				
+				# O item gerencia sua própria execução baseada no alvo fornecido
+				var success = slot.item.use(self, target_info)
+				if success and hotbar: 
+					_atualizar_visual_hotbar(hotbar.selected_index)
 					
-					if slot.item is ToolItemDefinition:
-						cost = slot.item.stamina_cost
-						dmg = slot.item.damage
-						
-					# Pergunta à barra de stamina se temos energia
-					if stamina_bar.has_energy(cost):
-						stamina_bar.consume(cost) # Dá a ordem para gastar
-						interaction.use_axe(animated_sprite, dmg)
-					else:
-						print("Estou muito cansado para usar ferramentas...")
-						
-				# 2. É UMA SEMENTE / ITEM COLOCÁVEL?
-				elif slot.item.placement_scene != null:
-					var cost_to_plant = 2 
-					
-					# Pergunta à barra de stamina se temos energia
-					if stamina_bar.has_energy(cost_to_plant):
-						# Se conseguiu plantar no chão correto...
-						if interaction.plant_seed(slot.item):
-							stamina_bar.consume(cost_to_plant) # Só gasta se o plantio deu certo!
-							inventory_component.get_inventory().remove_item(slot.item, 1)
-							if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)
-					else:
-						print("Estou muito cansado para plantar...")
+				get_viewport().set_input_as_handled()
 
 	# --- LÓGICA DE INTERAÇÃO COM BAÚS (TECLA 'E') ---
 	elif event is InputEventKey and event.keycode == KEY_E and event.pressed:
-		# Só interage se o rato estiver escondido (no jogo) ou visível (se fechar o baú clicando no próprio baú)
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			interaction.interact_with_object(self)
 
@@ -100,7 +78,6 @@ func toggle_inventory() -> void:
 func _physics_process(delta: float) -> void:
 	var input_dir = Vector3.ZERO
 	
-	# Só captura as teclas de movimento se o rato estiver escondido (modo jogo)
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		input_dir = Vector3(
 			Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
@@ -108,11 +85,8 @@ func _physics_process(delta: float) -> void:
 			Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
 		).normalized()
 
-	# O componente de movimento vai receber Vector3.ZERO se o inventário estiver aberto.
-	# Isso faz o jogador parar suavemente, mas a gravidade continua a funcionar!
 	var real_move_dir = movement.handle_movement(self, input_dir, delta)
 	
-	# Atualiza as animações (se input_dir for ZERO, ele vai tocar a animação de "Idle" / Parado)
 	animations.update_animation(input_dir)
 	interaction.update_grid(global_position, real_move_dir)
 
@@ -123,9 +97,7 @@ func _get_held_slot() -> SlotData:
 	return inv.get_slot(hotbar.get_selected_global_index())
 
 func _on_inventory_ready(inv):
-	# CORREÇÃO AQUI: Garante que os slots visuais são criados antes de adicionar o machado
 	await get_tree().process_frame
-	
 	if starting_axe: 
 		inv.add_item(starting_axe, 1)
 
@@ -176,12 +148,10 @@ func get_save_data() -> Dictionary:
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
 	
-	# Previne que um save antigo deixe a barra de stamina zerada
 	if stamina_bar:
 		if dados.has("stamina"):
 			stamina_bar.load_save_data(dados["stamina"])
 		else:
-			# Se não existir stamina no save, enche a barra para o jogador não começar exausto
 			stamina_bar.load_save_data(stamina_bar.max_stamina)
 	
 	if dados.has("inventory"):
