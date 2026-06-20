@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlaceableItemDefinition" format=3 uid="uid://1k2d5jw4qg2q"]
+
+[ext_resource type="Texture2D" uid="uid://cg3hkwvx6dbgg" path="res://items/chest/chest.png" id="1_b0g0i"]
+[ext_resource type="Script" uid="uid://cjwwa0ex1fnwp" path="res://items/chest/placeable_item_definition.gd" id="2_b0g0i"]
+[ext_resource type="PackedScene" uid="uid://db5ojjhacl7os" path="res://materials/chest/Chest.tscn" id="2_kv0mb"]
+
+[resource]
+script = ExtResource("2_b0g0i")
+id = "chest"
+display_name = "Chest"
+icon = ExtResource("1_b0g0i")
+placement_scene = ExtResource("2_kv0mb")
+metadata/_custom_type_script = "uid://byv3kcrvvt3h2"

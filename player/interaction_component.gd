@@ -39,12 +39,3 @@ func get_target_info() -> Dictionary:
 			info.collider = body
 			
 	return info
-
-func interact_with_object(player: CharacterBody3D) -> void:
-	if not interaction_area: return
-	
-	var bodies = interaction_area.get_overlapping_bodies()
-	for body in bodies:
-		if body.is_in_group("interactable") and body.has_method("interact"):
-			body.interact(player)
-			break

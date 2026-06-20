@@ -35,10 +35,12 @@ func _ready() -> void:
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
 		
 func _unhandled_input(event: InputEvent) -> void:
+	# --- LÓGICA DE ABRIR/FECHAR INVENTÁRIO DO PLAYER ---
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
 		get_viewport().set_input_as_handled()
 
+	# --- LÓGICA DE TROCAR ITEM NA HOTBAR ---
 	if hotbar:
 		for i in range(1, 10):
 			var action_name = "hotbar_" + str(i)
@@ -47,25 +49,40 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-	# --- INTERAÇÃO COM ITENS (ESTRUTURA LIMPA) ---
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			var slot = _get_held_slot()
+# Identifica qual botão foi apertado
+	var is_left_click = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed
+	var is_e_key = event is InputEventKey and event.keycode == KEY_E and event.pressed
+
+	# --- LÓGICA DE INTERAÇÃO E USO DE ITENS ---
+	if is_left_click or is_e_key:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			
-			if slot and slot.item and slot.item.has_method("use"):
-				var target_info = interaction.get_target_info()
+			var target_info = interaction.get_target_info()
+			var body = target_info.get("collider")
+			
+			# SE APERTOU 'E': Interage diretamente (Abre baús, portas, etc)
+			if is_e_key:
+				if body and body.is_in_group("interactable") and body.has_method("interact"):
+					body.interact(self)
+				get_viewport().set_input_as_handled()
+				return
 				
-				# O item gerencia sua própria execução baseada no alvo fornecido
-				var success = slot.item.use(self, target_info)
-				if success and hotbar: 
-					_atualizar_visual_hotbar(hotbar.selected_index)
+			# SE DEU CLIQUE ESQUERDO:
+			if is_left_click:
+				var slot = _get_held_slot()
+				var used_item = false
+				
+				# 1. Tenta usar o item da mão primeiro (Ex: dar machadada)
+				if slot and slot.item and slot.item.has_method("use"):
+					used_item = slot.item.use(self, target_info)
+					if used_item and hotbar: 
+						_atualizar_visual_hotbar(hotbar.selected_index)
+				
+				# 2. Se a mão estava vazia, ou o item não fez nada (retornou false), tenta interagir!
+				if not used_item and body and body.is_in_group("interactable") and body.has_method("interact"):
+					body.interact(self)
 					
 				get_viewport().set_input_as_handled()
-
-	# --- LÓGICA DE INTERAÇÃO COM BAÚS (TECLA 'E') ---
-	elif event is InputEventKey and event.keycode == KEY_E and event.pressed:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
-			interaction.interact_with_object(self)
 
 func toggle_inventory() -> void:
 	if not inventory_panel: return

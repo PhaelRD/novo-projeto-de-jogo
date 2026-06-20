@@ -11,6 +11,8 @@ size = Vector3(0.89260864, 1, 1)
 
 [node name="Chest" type="StaticBody3D" unique_id=218545150 groups=["interactable", "persist"]]
 script = ExtResource("1_c1w5s")
+health = 1
+chest_item_path = "uid://1k2d5jw4qg2q"
 
 [node name="InventoryComponent" type="Node" parent="." unique_id=1664783100]
 script = ExtResource("1_b1d7x")
@@ -26,7 +28,7 @@ shape = SubResource("BoxShape3D_grofb")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=263764480]
 
-[node name="ChestPanel" type="Control" parent="CanvasLayer" unique_id=203990407 node_paths=PackedStringArray("grid_container", "tooltip", "source_component")]
+[node name="ChestPanel" type="Control" parent="CanvasLayer" unique_id=203990407 node_paths=PackedStringArray("grid_container", "source_component")]
 visible = false
 layout_mode = 3
 anchors_preset = 0
@@ -36,7 +38,6 @@ offset_right = 85.0
 offset_bottom = 89.0
 script = ExtResource("3_36mc3")
 grid_container = NodePath("GridContainer")
-tooltip = NodePath("")
 source_component = NodePath("../../InventoryComponent")
 metadata/_custom_type_script = "uid://rwaqw0hptxmb"
 
