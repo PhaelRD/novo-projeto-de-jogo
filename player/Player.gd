@@ -15,8 +15,9 @@ class_name Player
 @onready var interaction: InteractionComponent = $InteractionComponent
 @onready var animated_sprite = $AnimatedSprite3D
 
-# MUDANÇA: Agora apontamos para a classe "StaminaBar" que acabámos de criar!
+# Referências de UI (Stamina)
 @onready var stamina_bar: StaminaBar = $CanvasLayer/StaminaBar
+
 
 func _ready() -> void:
 	add_to_group("persist")
@@ -25,14 +26,14 @@ func _ready() -> void:
 	
 	if inventory_component:
 		if inventory_component.inventory != null:
-			_on_inventory_ready(inventory_component.inventory)
+			call_deferred("_on_inventory_ready", inventory_component.inventory)
 		else:
 			inventory_component.inventory_ready.connect(_on_inventory_ready)
 			
 	if hotbar:
 		hotbar.selection_changed.connect(_atualizar_visual_hotbar)
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
-
+		
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
@@ -46,7 +47,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-	# --- LÓGICA DE AÇÕES E STAMINA ---
+	# --- LÓGICA DE AÇÕES E STAMINA (BOTÃO ESQUERDO) ---
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			var slot = _get_held_slot()
@@ -82,6 +83,12 @@ func _unhandled_input(event: InputEvent) -> void:
 					else:
 						print("Estou muito cansado para plantar...")
 
+	# --- LÓGICA DE INTERAÇÃO COM BAÚS (TECLA 'E') ---
+	elif event is InputEventKey and event.keycode == KEY_E and event.pressed:
+		# Só interage se o rato estiver escondido (no jogo) ou visível (se fechar o baú clicando no próprio baú)
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+			interaction.interact_with_object(self)
+
 func toggle_inventory() -> void:
 	if not inventory_panel: return
 	inventory_panel.visible = not inventory_panel.visible
@@ -91,13 +98,21 @@ func toggle_inventory() -> void:
 		InputMode.game()    
 
 func _physics_process(delta: float) -> void:
-	var input_dir = Vector3(
-		Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
-		0,
-		Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
-	).normalized()
+	var input_dir = Vector3.ZERO
+	
+	# Só captura as teclas de movimento se o rato estiver escondido (modo jogo)
+	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		input_dir = Vector3(
+			Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
+			0,
+			Input.get_action_strength("move_backward") - Input.get_action_strength("move_forward")
+		).normalized()
 
+	# O componente de movimento vai receber Vector3.ZERO se o inventário estiver aberto.
+	# Isso faz o jogador parar suavemente, mas a gravidade continua a funcionar!
 	var real_move_dir = movement.handle_movement(self, input_dir, delta)
+	
+	# Atualiza as animações (se input_dir for ZERO, ele vai tocar a animação de "Idle" / Parado)
 	animations.update_animation(input_dir)
 	interaction.update_grid(global_position, real_move_dir)
 
@@ -108,7 +123,11 @@ func _get_held_slot() -> SlotData:
 	return inv.get_slot(hotbar.get_selected_global_index())
 
 func _on_inventory_ready(inv):
-	if starting_axe: inv.add_item(starting_axe, 1)
+	# CORREÇÃO AQUI: Garante que os slots visuais são criados antes de adicionar o machado
+	await get_tree().process_frame
+	
+	if starting_axe: 
+		inv.add_item(starting_axe, 1)
 
 func _on_pickup_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("dropped_item") and inventory_component and inventory_component.inventory:
@@ -151,16 +170,19 @@ func get_save_data() -> Dictionary:
 		"pos_y": global_position.y,
 		"pos_z": global_position.z,
 		"inventory": inv_data,
-		# Pede o save data diretamente à barra!
 		"stamina": stamina_bar.get_save_data() if stamina_bar else 100
 	}
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
 	
-	# Manda a barra carregar os seus próprios dados!
-	if dados.has("stamina") and stamina_bar:
-		stamina_bar.load_save_data(dados["stamina"])
+	# Previne que um save antigo deixe a barra de stamina zerada
+	if stamina_bar:
+		if dados.has("stamina"):
+			stamina_bar.load_save_data(dados["stamina"])
+		else:
+			# Se não existir stamina no save, enche a barra para o jogador não começar exausto
+			stamina_bar.load_save_data(stamina_bar.max_stamina)
 	
 	if dados.has("inventory"):
 		var inv: Inventory = inventory_component.get_inventory()

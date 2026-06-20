@@ -94,3 +94,13 @@ func plant_seed(item_data: ItemDefinition) -> bool:
 		print("Semente plantada com sucesso na altura: ", base_y)
 	
 	return true
+
+# --- NOVA FUNÇÃO PARA ABRIR BAÚS (E OUTROS OBJETOS INTERATIVOS) ---
+func interact_with_object(player: CharacterBody3D) -> void:
+	if not interaction_area: return
+	
+	var bodies = interaction_area.get_overlapping_bodies()
+	for body in bodies:
+		if body.is_in_group("interactable") and body.has_method("interact"):
+			body.interact(player) # <- O baú resolve o resto sozinho!
+			break

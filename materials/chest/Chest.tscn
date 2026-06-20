@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://db5ojjhacl7os"]
+
+[ext_resource type="Script" uid="uid://bnfwaprwdmh1a" path="res://addons/modular_inventory_system/core/inventory_component.gd" id="1_b1d7x"]
+[ext_resource type="Script" uid="uid://c0e75sko6nr1a" path="res://materials/chest/chest.gd" id="1_c1w5s"]
+[ext_resource type="Script" uid="uid://rwaqw0hptxmb" path="res://addons/modular_inventory_system/ui/modular_panel.gd" id="3_36mc3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_i1m3l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_grofb"]
+size = Vector3(0.89260864, 1, 1)
+
+[node name="Chest" type="StaticBody3D" unique_id=218545150 groups=["interactable", "persist"]]
+script = ExtResource("1_c1w5s")
+
+[node name="InventoryComponent" type="Node" parent="." unique_id=1664783100]
+script = ExtResource("1_b1d7x")
+metadata/_custom_type_script = "uid://bnfwaprwdmh1a"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1267553261]
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("BoxMesh_i1m3l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=327378174]
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("BoxShape3D_grofb")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=263764480]
+
+[node name="ChestPanel" type="Control" parent="CanvasLayer" unique_id=203990407 node_paths=PackedStringArray("grid_container", "tooltip", "source_component")]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 45.0
+offset_top = 49.0
+offset_right = 85.0
+offset_bottom = 89.0
+script = ExtResource("3_36mc3")
+grid_container = NodePath("GridContainer")
+tooltip = NodePath("")
+source_component = NodePath("../../InventoryComponent")
+metadata/_custom_type_script = "uid://rwaqw0hptxmb"
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/ChestPanel" unique_id=703734342]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+columns = 5

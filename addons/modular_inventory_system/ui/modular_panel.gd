@@ -21,6 +21,8 @@ func _refresh_all():
 		_refresh_slot(i)
 
 func _refresh_slot(local_idx: int):
+	if local_idx < 0 or local_idx >= slot_uis.size():
+		return  # Ignora se slot não existe ainda
 	var slot_ui = slot_uis[local_idx]
 	var global_idx = slot_ui.get_meta("slot_index", -1)
 	if global_idx >= 0 and _inventory:
