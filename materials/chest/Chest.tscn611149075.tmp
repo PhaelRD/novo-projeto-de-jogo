@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://rwaqw0hptxmb" path="res://addons/modular_inventory_system/ui/modular_panel.gd" id="3_36mc3"]
 [ext_resource type="PackedScene" uid="uid://dbj42x0xpvu3" path="res://materials/chest/model.gltf" id="4_knwjn"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_i1m3l"]
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_grofb"]
 size = Vector3(0.89260864, 1, 1)
 
@@ -16,6 +18,10 @@ chest_item_path = "uid://1k2d5jw4qg2q"
 [node name="InventoryComponent" type="Node" parent="." unique_id=1664783100]
 script = ExtResource("1_b1d7x")
 metadata/_custom_type_script = "uid://bnfwaprwdmh1a"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1267553261]
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = SubResource("BoxMesh_i1m3l")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=327378174]
 transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)

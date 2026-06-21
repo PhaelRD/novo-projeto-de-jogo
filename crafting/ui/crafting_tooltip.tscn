@@ -18,9 +18,10 @@ expand_margin_bottom = 8.0
 
 [node name="CraftingTooltip" type="PanelContainer" unique_id=2073895782]
 z_index = 100
-custom_minimum_size = Vector2(200, 0)
-offset_right = 200.0
-offset_bottom = 100.0
+offset_right = 105.0
+offset_bottom = 99.0
+size_flags_horizontal = 0
+size_flags_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_tooltip")
 

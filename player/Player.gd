@@ -54,12 +54,28 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	# --- LÓGICA DE TROCAR ITEM NA HOTBAR ---
 	if hotbar:
+		# 1. Troca pelos números do teclado (1 a 9)
 		for i in range(1, 10):
 			var action_name = "hotbar_" + str(i)
 			if InputMap.has_action(action_name) and event.is_action_pressed(action_name):
 				hotbar.selected_index = i - 1
 				get_viewport().set_input_as_handled()
 				return 
+				
+		# 2. Troca pela rodinha do mouse (Scroll)
+		if event is InputEventMouseButton and event.pressed:
+			var total_slots = 9
+			if hotbar.slots_container:
+				total_slots = hotbar.slots_container.get_child_count()
+				
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+				hotbar.selected_index = (hotbar.selected_index - 1 + total_slots) % total_slots
+				get_viewport().set_input_as_handled()
+				return
+			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				hotbar.selected_index = (hotbar.selected_index + 1) % total_slots
+				get_viewport().set_input_as_handled()
+				return
 
 	# Identifica qual botão foi apertado
 	var is_left_click = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed
@@ -97,8 +113,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				if not used_item:
 					if body and body.is_in_group("interactable") and body.has_method("interact"):
 						body.interact(self) # Clicou no baú -> Abre o baú
-					else:
-						toggle_inventory()  # Clicou no nada -> Abre o Inventário
+					
+					# O clique no nada não abre mais o inventário!
 						
 				get_viewport().set_input_as_handled()
 

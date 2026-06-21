@@ -3,20 +3,14 @@ class_name Chest
 
 @export_category("Configuração de Quebra")
 @export var health: int = 3
-<<<<<<< HEAD
-=======
 # CORREÇÃO AQUI: Usando String para evitar o loop infinito no Godot!
->>>>>>> parent of 33b74ae (bau 3d)
 @export_file("*.tres") var chest_item_path: String 
 
 var dropped_item_scene = preload("res://addons/modular_inventory_system/world/dropped_item.tscn")
 
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var chest_panel: ModularInventoryPanel = $CanvasLayer/ChestPanel
-<<<<<<< HEAD
 @onready var animation_player: AnimationPlayer = find_child("AnimationPlayer", true, false)
-=======
->>>>>>> parent of 33b74ae (bau 3d)
 
 var is_open: bool = false
 
@@ -35,7 +29,6 @@ func interact(player: Player) -> void:
 func open_chest(player: Player) -> void:
 	is_open = true
 	
-<<<<<<< HEAD
 	# Avisa ao Player que este Baú assumiu o controle da UI
 	if "current_interactable" in player:
 		player.current_interactable = self
@@ -43,8 +36,6 @@ func open_chest(player: Player) -> void:
 	if animation_player and animation_player.has_animation("animation"):
 		animation_player.play("animation")
 	
-=======
->>>>>>> parent of 33b74ae (bau 3d)
 	var chest_inv = inventory_component.inventory
 	if not chest_inv and inventory_component.has_method("get_inventory"):
 		chest_inv = inventory_component.get_inventory()
@@ -70,7 +61,6 @@ func open_chest(player: Player) -> void:
 func close_chest(player: Player) -> void:
 	is_open = false
 	
-<<<<<<< HEAD
 	# Devolve o controle para o Player
 	if "current_interactable" in player and player.current_interactable == self:
 		player.current_interactable = null
@@ -78,8 +68,6 @@ func close_chest(player: Player) -> void:
 	if animation_player and animation_player.has_animation("animation"):
 		animation_player.play_backwards("animation")
 	
-=======
->>>>>>> parent of 33b74ae (bau 3d)
 	player.inventory_panel.visible = false
 	chest_panel.visible = false
 	chest_panel.source_component = null
@@ -112,10 +100,7 @@ func break_chest() -> void:
 			if slot and slot.item and slot.count > 0:
 				_spawn_dropped_item(slot.item, slot.count)
 				
-<<<<<<< HEAD
-=======
 	# 3. CORREÇÃO: Dropa o item do próprio baú carregando o caminho
->>>>>>> parent of 33b74ae (bau 3d)
 	if chest_item_path != "":
 		var chest_item_definition = load(chest_item_path) as ItemDefinition
 		if chest_item_definition:
@@ -133,11 +118,8 @@ func _spawn_dropped_item(item_def: ItemDefinition, amount: int) -> void:
 	drop.item_ = item_def
 	drop.count = amount
 	
-<<<<<<< HEAD
-=======
 	# MUDANÇA AQUI: Adiciona ao nó pai do baú, garantindo que ele exista 
 	# na mesma sub-cena/mapa em que o baú foi colocado!
->>>>>>> parent of 33b74ae (bau 3d)
 	get_parent().add_child(drop)
 	
 	var random_offset = Vector3(randf_range(-0.5, 0.5), 0.5, randf_range(-0.5, 0.5))

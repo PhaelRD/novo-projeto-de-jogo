@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://xf1twal6dn3g" path="res://addons/modular_inventory_system/ui/modular_hotbar.gd" id="6_aqcbf"]
 [ext_resource type="Script" uid="uid://bc463qt5ulfkv" path="res://player/stamina_bar.gd" id="8_5qrx2"]
 [ext_resource type="Script" uid="uid://4jhop52nu5lc" path="res://player/interaction_component.gd" id="9_5qrx2"]
-[ext_resource type="PackedScene" path="res://crafting/ui/crafting_panel.tscn" id="9_b32pr"]
+[ext_resource type="PackedScene" uid="uid://bwbeq0y7cv4cv" path="res://crafting/ui/crafting_panel.tscn" id="9_b32pr"]
 [ext_resource type="Script" uid="uid://bh4oamdp5h73q" path="res://player/movement_component.gd" id="10_b32pr"]
 [ext_resource type="Script" uid="uid://dibfd4rhn2ci7" path="res://player/animation_component.gd" id="11_hbkom"]
 
