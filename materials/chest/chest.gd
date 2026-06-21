@@ -150,12 +150,22 @@ func get_save_data() -> Dictionary:
 		"pos_x": global_position.x,
 		"pos_y": global_position.y,
 		"pos_z": global_position.z,
+		"rot_x": rotation.x, # SALVA A ROTAÇÃO X
+		"rot_y": rotation.y, # SALVA A ROTAÇÃO Y (A mais importante!)
+		"rot_z": rotation.z, # SALVA A ROTAÇÃO Z
 		"inventory": inv_data,
 		"health": health
 	}
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
+	
+	# CARREGA A ROTAÇÃO: 
+	# Usamos .get() com o valor 0.0 caso o save seja antigo e não tenha essa informação salva!
+	var rx = dados.get("rot_x", 0.0)
+	var ry = dados.get("rot_y", 0.0)
+	var rz = dados.get("rot_z", 0.0)
+	rotation = Vector3(rx, ry, rz)
 	
 	if dados.has("health"):
 		health = dados["health"]
