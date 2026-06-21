@@ -10,6 +10,9 @@ class_name Player
 @onready var hotbar: ModularHotbar = $CanvasLayer/ModularHotbar
 @onready var inventory_component = $InventoryComponent 
 
+# O PAINEL DE CRAFT AGORA É PEGO DIRETO DA CENA! (Jeito limpo e organizado)
+@onready var crafting_panel: CraftingPanel = $CanvasLayer/CraftingPanel
+
 @onready var movement: MovementComponent = $MovementComponent
 @onready var animations: AnimationComponent = $AnimationComponent
 @onready var interaction: InteractionComponent = $InteractionComponent
@@ -18,11 +21,19 @@ class_name Player
 # Referências de UI (Stamina)
 @onready var stamina_bar: StaminaBar = $CanvasLayer/StaminaBar
 
+# NOVA VARIÁVEL: Guarda o objeto aberto no momento (ex: Baú)
+var current_interactable: Node3D = null
 
 func _ready() -> void:
 	add_to_group("persist")
 	animations.sprite = animated_sprite
 	animations.setup()
+	
+	# Garante que os painéis comecem invisíveis na hora do play
+	if inventory_panel:
+		inventory_panel.visible = false
+	if crafting_panel:
+		crafting_panel.visible = false
 	
 	if inventory_component:
 		if inventory_component.inventory != null:
@@ -33,12 +44,13 @@ func _ready() -> void:
 	if hotbar:
 		hotbar.selection_changed.connect(_atualizar_visual_hotbar)
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
-		
+
 func _unhandled_input(event: InputEvent) -> void:
 	# --- LÓGICA DE ABRIR/FECHAR INVENTÁRIO DO PLAYER ---
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
 		get_viewport().set_input_as_handled()
+		return 
 
 	# --- LÓGICA DE TROCAR ITEM NA HOTBAR ---
 	if hotbar:
@@ -49,7 +61,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return 
 
-# Identifica qual botão foi apertado
+	# Identifica qual botão foi apertado
 	var is_left_click = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed
 	var is_e_key = event is InputEventKey and event.keycode == KEY_E and event.pressed
 
@@ -60,10 +72,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			var target_info = interaction.get_target_info()
 			var body = target_info.get("collider")
 			
-			# SE APERTOU 'E': Interage diretamente (Abre baús, portas, etc)
+			# SE APERTOU 'E':
 			if is_e_key:
 				if body and body.is_in_group("interactable") and body.has_method("interact"):
-					body.interact(self)
+					body.interact(self) # Aperta E no Baú -> Abre o baú
+				else:
+					toggle_inventory()  # Aperta E longe do Baú -> Abre o Inventário
+					
 				get_viewport().set_input_as_handled()
 				return
 				
@@ -72,22 +87,38 @@ func _unhandled_input(event: InputEvent) -> void:
 				var slot = _get_held_slot()
 				var used_item = false
 				
-				# 1. Tenta usar o item da mão primeiro (Ex: dar machadada)
+				# 1. Tenta usar o item da mão primeiro (machadada, plantar, etc)
 				if slot and slot.item and slot.item.has_method("use"):
 					used_item = slot.item.use(self, target_info)
 					if used_item and hotbar: 
 						_atualizar_visual_hotbar(hotbar.selected_index)
 				
-				# 2. Se a mão estava vazia, ou o item não fez nada (retornou false), tenta interagir!
-				if not used_item and body and body.is_in_group("interactable") and body.has_method("interact"):
-					body.interact(self)
-					
+				# 2. Se a mão estava vazia ou o item não fez nada, tenta interagir!
+				if not used_item:
+					if body and body.is_in_group("interactable") and body.has_method("interact"):
+						body.interact(self) # Clicou no baú -> Abre o baú
+					else:
+						toggle_inventory()  # Clicou no nada -> Abre o Inventário
+						
 				get_viewport().set_input_as_handled()
 
 func toggle_inventory() -> void:
+	# 1. Se tem um BAÚ ABERTO, a prioridade desta tecla é fechá-lo!
+	if is_instance_valid(current_interactable) and current_interactable.has_method("close_chest"):
+		current_interactable.close_chest(self)
+		return
+	current_interactable = null # Limpa por segurança
+		
+	# 2. Se não tem baú aberto, abre/fecha o Inventário + Crafting normalmente
 	if not inventory_panel: return
-	inventory_panel.visible = not inventory_panel.visible
-	if inventory_panel.visible:
+	
+	var vai_abrir = not inventory_panel.visible
+	
+	inventory_panel.visible = vai_abrir
+	if crafting_panel:
+		crafting_panel.visible = vai_abrir
+	
+	if vai_abrir:
 		InputMode.ui()      
 	else:
 		InputMode.game()    

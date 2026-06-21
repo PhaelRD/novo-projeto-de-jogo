@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://xf1twal6dn3g" path="res://addons/modular_inventory_system/ui/modular_hotbar.gd" id="6_aqcbf"]
 [ext_resource type="Script" uid="uid://bc463qt5ulfkv" path="res://player/stamina_bar.gd" id="8_5qrx2"]
 [ext_resource type="Script" uid="uid://4jhop52nu5lc" path="res://player/interaction_component.gd" id="9_5qrx2"]
+[ext_resource type="PackedScene" path="res://crafting/ui/crafting_panel.tscn" id="9_b32pr"]
 [ext_resource type="Script" uid="uid://bh4oamdp5h73q" path="res://player/movement_component.gd" id="10_b32pr"]
 [ext_resource type="Script" uid="uid://dibfd4rhn2ci7" path="res://player/animation_component.gd" id="11_hbkom"]
 
@@ -198,12 +199,12 @@ autoplay = "idle"
 
 [node name="InventoryComponent" type="Node" parent="." unique_id=1901451170]
 script = ExtResource("3_wnvi2")
+capacity = 36
 metadata/_custom_type_script = "uid://bnfwaprwdmh1a"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=857074502]
 
 [node name="ModularInventoryPanel" type="Control" parent="CanvasLayer" unique_id=448780225 node_paths=PackedStringArray("grid_container", "tooltip", "source_component")]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -218,12 +219,12 @@ metadata/_custom_type_script = "uid://rwaqw0hptxmb"
 [node name="GridContainer" type="GridContainer" parent="CanvasLayer/ModularInventoryPanel" unique_id=1413835853]
 layout_mode = 1
 anchors_preset = -1
-offset_left = 407.0
-offset_top = 175.0
-offset_right = 447.0
-offset_bottom = 215.0
+offset_left = 340.0
+offset_top = 333.0
+offset_right = 380.0
+offset_bottom = 373.0
 mouse_filter = 2
-columns = 5
+columns = 9
 
 [node name="ItemTooltip" type="Control" parent="CanvasLayer/ModularInventoryPanel" unique_id=267065243 node_paths=PackedStringArray("tooltip_label")]
 visible = false
@@ -256,16 +257,15 @@ offset_bottom = 40.0
 mouse_filter = 2
 script = ExtResource("6_aqcbf")
 slots_container = NodePath("HBoxContainer")
-hotbar_size = 5
 source_component = NodePath("../../InventoryComponent")
 metadata/_custom_type_script = "uid://xf1twal6dn3g"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ModularHotbar" unique_id=1754035332]
 layout_mode = 0
-offset_left = 405.0
-offset_top = 580.0
-offset_right = 445.0
-offset_bottom = 620.0
+offset_left = 340.0
+offset_top = 591.0
+offset_right = 380.0
+offset_bottom = 631.0
 mouse_filter = 2
 
 [node name="StaminaBar" type="ProgressBar" parent="CanvasLayer" unique_id=1416110438]
@@ -278,6 +278,10 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_5qrx2")
 fill_mode = 3
 show_percentage = false
 script = ExtResource("8_5qrx2")
+
+[node name="CraftingPanel" parent="CanvasLayer" unique_id=1145554624 node_paths=PackedStringArray("inventory_component") instance=ExtResource("9_b32pr")]
+visible = false
+inventory_component = NodePath("../../InventoryComponent")
 
 [node name="PickupArea" type="Area3D" parent="." unique_id=1433529411]
 collision_layer = 0

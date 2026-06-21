@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dfvqcu60lqp3t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tooltip"]
+bg_color = Color(0.97, 0.82, 0.53, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.48, 0.26, 0.13, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 8.0
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+
+[node name="CraftingTooltip" type="PanelContainer" unique_id=2073895782]
+z_index = 100
+custom_minimum_size = Vector2(200, 0)
+offset_right = 200.0
+offset_bottom = 100.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tooltip")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=740381903]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ItemName" type="Label" parent="VBox" unique_id=1989367116]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 18
+text = "Item Name"
+
+[node name="HSeparator" type="HSeparator" parent="VBox" unique_id=1126168814]
+layout_mode = 2
+
+[node name="IngredientsLabel" type="Label" parent="VBox" unique_id=1408169950]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.15, 0.05, 1)
+theme_override_font_sizes/font_size = 14
+text = "Ingredients:"
+
+[node name="IngredientsContainer" type="VBoxContainer" parent="VBox" unique_id=1055556136]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="HSeparator2" type="HSeparator" parent="VBox" unique_id=243397130]
+layout_mode = 2
+
+[node name="Description" type="Label" parent="VBox" unique_id=286028001]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.1, 0, 1)
+theme_override_font_sizes/font_size = 12
+text = "Description text goes here."
+autowrap_mode = 3

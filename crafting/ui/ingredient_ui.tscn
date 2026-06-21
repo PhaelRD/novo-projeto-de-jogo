@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://pnwh8ursg1uj"]
+
+[node name="Ingredient" type="HBoxContainer" unique_id=1131840119]
+custom_minimum_size = Vector2(0, 24)
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 24.0
+grow_horizontal = 2
+
+[node name="Icon" type="TextureRect" parent="." unique_id=1424764575]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Amount" type="Label" parent="." unique_id=833589521]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "0/0"
+vertical_alignment = 1
+
+[node name="Name" type="Label" parent="." unique_id=753359094]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Ingredient Name"
+vertical_alignment = 1
+text_overrun_behavior = 3

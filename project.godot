@@ -23,6 +23,11 @@ InputMode="*uid://c4kxikxn060f4"
 UICoordinator="*uid://ci3nauoorm6et"
 SaveManager="*uid://bt2hwre3tov1d"
 
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/TileMapLayer3D/plugin.cfg", "res://addons/modular_inventory_system/plugin.cfg")

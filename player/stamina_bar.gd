@@ -2,8 +2,8 @@ extends ProgressBar
 class_name StaminaBar
 
 @export_category("Configuração de Energia")
-@export var max_stamina: int = 100
-var current_stamina: int = 100
+@export var max_stamina: int = 200
+var current_stamina: int = 200
 
 func _ready() -> void:
 	max_value = max_stamina

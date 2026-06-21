@@ -25,7 +25,7 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 
 	var base_y = target_pos.y
 
-	# 3. Opcional: Procura o chão para não deixar o baú flutuando
+	# 3. Procura o chão para não deixar o objeto flutuando
 	if require_floor:
 		var mapas = player.get_tree().get_nodes_in_group("terrain")
 		var found_floor = false
@@ -34,7 +34,6 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 			var tile_map = mapas[0]
 			if tile_map.runtime_api:
 				var player_y = player.global_position.y
-				# Escaneia a altura ao redor da mira
 				for offset_y in [1.0, 0.5, 0.0, -0.5, -1.0, -1.5]:
 					var test_pos = target_pos
 					test_pos.y = player_y + offset_y
@@ -52,14 +51,26 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 	# 4. Instancia e coloca no mundo
 	var new_object = placement_scene.instantiate()
 	player.get_tree().current_scene.add_child(new_object)
-	
 	new_object.global_position = Vector3(target_pos.x, base_y, target_pos.z)
 	
-	# Opcional: Tocar um som de "construção" ou fazer um efeitinho visual aqui
+	# --- 5. LÓGICA DE ROTAÇÃO (Frente para o Player) ---
+	var look_pos = player.global_position
+	look_pos.y = new_object.global_position.y # Nivela o eixo Y para o baú não tombar para trás/frente
 	
-	# 5. Consome energia e o item
+	# Só gira se o player não estiver exatamente dentro do mesmo pixel do baú
+	if new_object.global_position.distance_to(look_pos) > 0.1:
+		# Faz o objeto olhar para a posição nivelada do jogador
+		new_object.look_at(look_pos, Vector3.UP)
+		
+		# Como o seu jogo tem estilo Grid (posições arredondadas), 
+		# arredondamos a rotação para ângulos retos (0, 90, 180, 270 graus)
+		var snapped_rot = snapped(new_object.rotation.y, PI / 2.0)
+		new_object.rotation.y = snapped_rot
+	# ----------------------------------------------------
+	
+	# 6. Consome energia e o item
 	player.stamina_bar.consume(stamina_cost)
 	player.inventory_component.get_inventory().remove_item(self, 1)
 	
-	print("Objeto colocado no mundo!")
+	print("Objeto colocado no mundo virado para o jogador!")
 	return true

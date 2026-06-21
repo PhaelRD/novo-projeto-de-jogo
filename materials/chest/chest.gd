@@ -3,14 +3,20 @@ class_name Chest
 
 @export_category("Configuração de Quebra")
 @export var health: int = 3
+<<<<<<< HEAD
+=======
 # CORREÇÃO AQUI: Usando String para evitar o loop infinito no Godot!
+>>>>>>> parent of 33b74ae (bau 3d)
 @export_file("*.tres") var chest_item_path: String 
 
-# Carregamento seguro: não precisa mais arrastar no Inspector!
 var dropped_item_scene = preload("res://addons/modular_inventory_system/world/dropped_item.tscn")
 
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var chest_panel: ModularInventoryPanel = $CanvasLayer/ChestPanel
+<<<<<<< HEAD
+@onready var animation_player: AnimationPlayer = find_child("AnimationPlayer", true, false)
+=======
+>>>>>>> parent of 33b74ae (bau 3d)
 
 var is_open: bool = false
 
@@ -29,6 +35,16 @@ func interact(player: Player) -> void:
 func open_chest(player: Player) -> void:
 	is_open = true
 	
+<<<<<<< HEAD
+	# Avisa ao Player que este Baú assumiu o controle da UI
+	if "current_interactable" in player:
+		player.current_interactable = self
+	
+	if animation_player and animation_player.has_animation("animation"):
+		animation_player.play("animation")
+	
+=======
+>>>>>>> parent of 33b74ae (bau 3d)
 	var chest_inv = inventory_component.inventory
 	if not chest_inv and inventory_component.has_method("get_inventory"):
 		chest_inv = inventory_component.get_inventory()
@@ -41,14 +57,29 @@ func open_chest(player: Player) -> void:
 	if chest_panel.has_method("_on_inventory_attached"):
 		chest_panel._on_inventory_attached(chest_inv)
 	
-	player.inventory_panel.visible = true
-	chest_panel.visible = true
+	# MÁGICA VISUAL AQUI:
+	player.inventory_panel.visible = true # Mostra Inventário
+	
+	if "crafting_panel" in player and player.crafting_panel:
+		player.crafting_panel.visible = false # Esconde Crafting!
+		
+	chest_panel.visible = true # Mostra o Baú
 
 	InputMode.ui()
 
 func close_chest(player: Player) -> void:
 	is_open = false
 	
+<<<<<<< HEAD
+	# Devolve o controle para o Player
+	if "current_interactable" in player and player.current_interactable == self:
+		player.current_interactable = null
+	
+	if animation_player and animation_player.has_animation("animation"):
+		animation_player.play_backwards("animation")
+	
+=======
+>>>>>>> parent of 33b74ae (bau 3d)
 	player.inventory_panel.visible = false
 	chest_panel.visible = false
 	chest_panel.source_component = null
@@ -67,13 +98,11 @@ func hit_with_axe(damage: int) -> void:
 		break_chest()
 
 func break_chest() -> void:
-	# 1. Se quebrar enquanto estiver aberto, limpa a UI
 	if is_open:
 		chest_panel.visible = false
 		chest_panel.source_component = null
 		InputMode.game()
 
-	# 2. Resgata o inventário interno para ejetar os itens
 	var inv = inventory_component.inventory
 	if not inv and inventory_component.has_method("get_inventory"):
 		inv = inventory_component.get_inventory()
@@ -83,7 +112,10 @@ func break_chest() -> void:
 			if slot and slot.item and slot.count > 0:
 				_spawn_dropped_item(slot.item, slot.count)
 				
+<<<<<<< HEAD
+=======
 	# 3. CORREÇÃO: Dropa o item do próprio baú carregando o caminho
+>>>>>>> parent of 33b74ae (bau 3d)
 	if chest_item_path != "":
 		var chest_item_definition = load(chest_item_path) as ItemDefinition
 		if chest_item_definition:
@@ -91,7 +123,6 @@ func break_chest() -> void:
 	else:
 		push_warning("Atenção: Caminho do 'chest_item' não configurado no Baú!")
 		
-	# 4. Destrói o baú no mundo
 	queue_free()
 
 func _spawn_dropped_item(item_def: ItemDefinition, amount: int) -> void:
@@ -99,15 +130,16 @@ func _spawn_dropped_item(item_def: ItemDefinition, amount: int) -> void:
 		return
 		
 	var drop = dropped_item_scene.instantiate()
-	
 	drop.item_ = item_def
 	drop.count = amount
 	
+<<<<<<< HEAD
+=======
 	# MUDANÇA AQUI: Adiciona ao nó pai do baú, garantindo que ele exista 
 	# na mesma sub-cena/mapa em que o baú foi colocado!
+>>>>>>> parent of 33b74ae (bau 3d)
 	get_parent().add_child(drop)
 	
-	# Posição do Baú + um desvio aleatório para os itens "pularem"
 	var random_offset = Vector3(randf_range(-0.5, 0.5), 0.5, randf_range(-0.5, 0.5))
 	drop.global_position = self.global_position + random_offset
 

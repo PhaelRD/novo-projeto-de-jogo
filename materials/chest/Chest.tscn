@@ -43,6 +43,14 @@ metadata/_custom_type_script = "uid://rwaqw0hptxmb"
 
 [node name="GridContainer" type="GridContainer" parent="CanvasLayer/ChestPanel" unique_id=703734342]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 5.0
+offset_top = 285.0
+offset_right = 45.0
+offset_bottom = 325.0
 columns = 5
+<<<<<<< HEAD
+
+[node name="model" parent="." unique_id=1349483354 instance=ExtResource("4_knwjn")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.00518021, 0)
+=======
+>>>>>>> parent of 33b74ae (bau 3d)

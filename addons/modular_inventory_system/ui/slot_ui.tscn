@@ -27,7 +27,7 @@ border_blend = true
 [node name="InventorySlot" type="Control" unique_id=1997194000 groups=["inventory_drop_targets"]]
 texture_filter = 1
 material = SubResource("CanvasItemMaterial_g2w5v")
-custom_minimum_size = Vector2(64, 64)
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,31 +36,33 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -32.5
 offset_top = -32.5
-offset_right = 32.5
-offset_bottom = 32.5
+offset_right = 15.5
+offset_bottom = 15.5
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
 mouse_default_cursor_shape = 2
 script = ExtResource("1_tqcdp")
 
 [node name="BackgroundTexture" type="TextureRect" parent="." unique_id=637384455]
 visible = false
-custom_minimum_size = Vector2(65, 65)
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 65.0
+offset_right = 48.0
+offset_bottom = 48.0
 mouse_filter = 2
 
 [node name="BackgroundColor" type="ColorRect" parent="." unique_id=1021725109]
-custom_minimum_size = Vector2(65, 65)
+custom_minimum_size = Vector2(48, 48)
 layout_mode = 0
-offset_right = 65.0
-offset_bottom = 65.0
+offset_right = 48.0
+offset_bottom = 48.0
 mouse_filter = 2
 theme = SubResource("Theme_tqcdp")
 color = Color(0.32544094, 0.32544088, 0.32544088, 0.78431374)
 
 [node name="Placeholder" type="TextureRect" parent="." unique_id=895221751]
+visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -75,7 +77,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Icon" type="TextureRect" parent="." unique_id=340152836]
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(36, 36)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -84,6 +86,7 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
+scale = Vector2(1.0625, 1)
 expand_mode = 1
 stretch_mode = 5
 
@@ -124,11 +127,9 @@ vertical_alignment = 2
 clip_text = true
 
 [node name="Panel" type="Panel" parent="." unique_id=521627541]
-visible = false
 layout_mode = 0
 
 [node name="Highlight" type="Panel" parent="." unique_id=1488464648]
-visible = false
 layout_mode = 0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ru537")
@@ -150,20 +151,24 @@ layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -1.5
+offset_top = -16.5
+offset_right = -15.5
+offset_bottom = -16.5
 grow_horizontal = 2
 
 [node name="DurabilityFill" type="ColorRect" parent="DurabilityBar" unique_id=1472498017]
-custom_minimum_size = Vector2(60, 3)
+custom_minimum_size = Vector2(46, 3)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -30.0
-offset_top = -2.0
-offset_right = 30.0
-offset_bottom = 1.0
+offset_left = -31.5
+offset_top = -18.5
+offset_right = 14.5
+offset_bottom = -15.5
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.42352942, 0.42352942, 0.42352942, 1)

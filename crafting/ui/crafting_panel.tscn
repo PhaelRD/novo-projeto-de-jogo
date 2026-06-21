@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://bwbeq0y7cv4cv"]
+
+[ext_resource type="Script" uid="uid://bxcjybjv1atfj" path="res://crafting/ui/crafting_panel.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://blgqkxhfe24n0" path="res://crafting/scripts/crafting_recipe.gd" id="2_ch72v"]
+[ext_resource type="Resource" uid="uid://cax20h0m28l2h" path="res://crafting/recipes/recipe_chest.tres" id="2_recipe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.97, 0.82, 0.53, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.48, 0.26, 0.13, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+expand_margin_left = 12.0
+expand_margin_top = 12.0
+expand_margin_right = 12.0
+expand_margin_bottom = 12.0
+
+[node name="CraftingPanel" type="PanelContainer" unique_id=1014998757]
+custom_minimum_size = Vector2(400, 350)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -255.99997
+offset_top = -301.0
+offset_right = 144.0
+offset_bottom = 49.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.2371303, 0.76373625)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+script = ExtResource("1_script")
+recipes = Array[ExtResource("2_ch72v")]([ExtResource("2_recipe")])
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=69345991]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CategoryTabs" type="HBoxContainer" parent="VBox" unique_id=2039632952]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="All" type="Button" parent="VBox/CategoryTabs" unique_id=152503984]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "*"
+
+[node name="Tools" type="Button" parent="VBox/CategoryTabs" unique_id=692688370]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "T"
+
+[node name="Furniture" type="Button" parent="VBox/CategoryTabs" unique_id=1071795749]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+text = "M"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBox" unique_id=1176819875]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RecipeGrid" type="GridContainer" parent="VBox/ScrollContainer" unique_id=1960795728]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 6
