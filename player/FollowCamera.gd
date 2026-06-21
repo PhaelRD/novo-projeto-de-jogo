@@ -30,10 +30,8 @@ func _physics_process(delta: float) -> void:
 		_current_angle = float(_rotation_index) * ROTATION_STEP_RADIANS
 		_is_tracking = true
 
-	# --- Captura das Setas para Girar 90 Graus ---
-	if Input.is_action_just_pressed("ui_left"):
-		_rotation_index = (_rotation_index - 1 + ROTATION_DIVISIONS) % ROTATION_DIVISIONS
-	elif Input.is_action_just_pressed("ui_right"):
+	# --- Captura da Tecla para Girar 90 Graus para a Direita ---
+	if Input.is_action_just_pressed("rotate_camera"):
 		_rotation_index = (_rotation_index + 1) % ROTATION_DIVISIONS
 
 	var weight: float = clamp(delta * smooth_speed, 0.0, 1.0)
