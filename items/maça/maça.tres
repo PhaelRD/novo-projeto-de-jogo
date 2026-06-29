@@ -1,0 +1,11 @@
+[gd_resource type="Resource" format=3 uid="uid://db5dmnbqmkxfb"]
+
+[ext_resource type="Texture2D" uid="uid://lj03trur5rva" path="res://items/maça/maça.png" id="1_icon"]
+[ext_resource type="Script" uid="uid://ca7vciupw21aq" path="res://items/definitions/food_item_definition.gd" id="2_hi55k"]
+
+[resource]
+script = ExtResource("2_hi55k")
+id = "maca"
+display_name = "Maçã"
+icon = ExtResource("1_icon")
+max_stack_size = 99

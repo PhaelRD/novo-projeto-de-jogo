@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cfu6ejp5bl530"]
+
+[ext_resource type="Texture2D" uid="uid://dl5iqjhm18in4" path="res://items/madeira/madeira.png" id="1_8w55v"]
+[ext_resource type="Script" uid="uid://buqjlq2vnh154" path="res://addons/modular_inventory_system/core/item_definition.gd" id="2_f7ypr"]
+
+[resource]
+script = ExtResource("2_f7ypr")
+id = "madeira"
+display_name = "Madeira"
+icon = ExtResource("1_8w55v")
+max_stack_size = 99
+metadata/_custom_type_script = "uid://buqjlq2vnh154"

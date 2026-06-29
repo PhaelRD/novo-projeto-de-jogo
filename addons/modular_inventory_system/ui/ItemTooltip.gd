@@ -16,7 +16,8 @@ func _ready() -> void:
 	if tooltip_label:
 		tooltip_label.bbcode_enabled = true
 		tooltip_label.fit_content = true
-		tooltip_label.custom_minimum_size.x = max_width
+		
+		# REMOVIDO: tooltip_label.custom_minimum_size.x = max_width (Isso travava o tamanho gigante)
 		
 		tooltip_label.set_anchors_preset(Control.PRESET_FULL_RECT)
 		
@@ -56,7 +57,21 @@ func show_tooltip(slot_data: SlotData, screen_pos: Vector2) -> void:
 		hide_tooltip()
 		return
 	_visible_slot_data = slot_data
+	
+	# 1. Reseta os limites para o Godot medir o tamanho original do texto livremente
+	tooltip_label.custom_minimum_size.x = 0
+	tooltip_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	tooltip_label.text = SlotUI.generate_tooltip_text(slot_data)
+	
+	# 2. Descobre a largura real daquele texto
+	var real_width = tooltip_label.get_content_width()
+	
+	# 3. Se for maior que o máximo permitido, a gente trava a largura e liga a quebra de linha
+	if real_width > max_width:
+		tooltip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		tooltip_label.custom_minimum_size.x = max_width
+		tooltip_label.size.x = max_width
+	
 	visible = true
 	_update_position(screen_pos)
 
@@ -71,16 +86,24 @@ func _process(_delta: float) -> void:
 func _update_position(mouse_pos: Vector2) -> void:
 	var viewport_size = get_viewport_rect().size
 	
-	var target_size = tooltip_label.get_minimum_size()
-	if target_size.x > 0 and target_size.y > 0:
-		custom_minimum_size = target_size
+	# Descobre o tamanho final do texto após as quebras de linha
+	var final_width = tooltip_label.size.x
+	if tooltip_label.autowrap_mode == TextServer.AUTOWRAP_OFF:
+		final_width = tooltip_label.get_content_width()
+		
+	# Adiciona 20px (que são as suas margens de 10px de cada lado)
+	var target_size = Vector2(final_width + 20, tooltip_label.get_content_height() + 20)
 	
-	var tooltip_size = size
+	# Força o painel de fundo e o control a assumirem esse tamanho justinho
+	size = target_size
+	custom_minimum_size = target_size
+	
+	# Posicionamento inteligente para não fugir da tela
 	var pos = mouse_pos + offset
 	
-	if pos.x + tooltip_size.x > viewport_size.x:
-		pos.x = mouse_pos.x - tooltip_size.x - offset.x
-	if pos.y + tooltip_size.y > viewport_size.y:
-		pos.y = mouse_pos.y - tooltip_size.y - offset.y
+	if pos.x + target_size.x > viewport_size.x:
+		pos.x = mouse_pos.x - target_size.x - offset.x
+	if pos.y + target_size.y > viewport_size.y:
+		pos.y = mouse_pos.y - target_size.y - offset.y
 		
 	global_position = pos

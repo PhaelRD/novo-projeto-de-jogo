@@ -2,7 +2,7 @@
 
 [![Godot 4.2+](https://img.shields.io/badge/Godot-4.2%2B-blue)](https://godotengine.org/)
 [![License](https://img.shields.io/badge/license-Custom-green)](https://ziva.sh/terms)
-[![Discord](https://img.shields.io/badge/Discord-join-7289da?logo=discord&logoColor=white)](https://discord.gg/ziva)
+[![Discord](https://img.shields.io/badge/Discord-join-7289da?logo=discord&logoColor=white)](https://ziva.sh/discord)
 [![Website](https://img.shields.io/badge/Website-ziva.sh-success)](https://ziva.sh/)
 
 **Ziva is not just another plugin. It is currently the single most powerful AI coding companion ever created for Godot.**

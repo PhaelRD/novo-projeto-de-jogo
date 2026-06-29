@@ -18,13 +18,12 @@ script = ExtResource("1_b1d7x")
 metadata/_custom_type_script = "uid://bnfwaprwdmh1a"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=327378174]
-transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.25424188, 0)
 shape = SubResource("BoxShape3D_grofb")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=263764480]
 
 [node name="ChestPanel" type="Control" parent="CanvasLayer" unique_id=203990407 node_paths=PackedStringArray("grid_container", "source_component")]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = 45.0

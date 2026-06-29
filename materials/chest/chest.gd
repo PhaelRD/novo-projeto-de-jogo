@@ -19,6 +19,10 @@ func _ready() -> void:
 		add_to_group("persist")
 	if not is_in_group("interactable"):
 		add_to_group("interactable")
+		
+	# NOVA LINHA: Garante que a UI do baú comece invisível ao ser colocado no chão!
+	if chest_panel:
+		chest_panel.visible = false
 
 func interact(player: Player) -> void:
 	if is_open:

@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://bwbeq0y7cv4cv" path="res://crafting/ui/crafting_panel.tscn" id="9_b32pr"]
 [ext_resource type="Script" uid="uid://bh4oamdp5h73q" path="res://player/movement_component.gd" id="10_b32pr"]
 [ext_resource type="Script" uid="uid://dibfd4rhn2ci7" path="res://player/animation_component.gd" id="11_hbkom"]
+[ext_resource type="Script" uid="uid://beomt1vu3hv0i" path="res://player/pickup_component.gd" id="12_pickup"]
+[ext_resource type="Script" uid="uid://c5l0j0nhnyqh" path="res://player/hotbar_input_component.gd" id="13_hotbar"]
+[ext_resource type="Script" uid="uid://db1ed46g4mnyk" path="res://player/placement_ghost_component.gd" id="14_ghost"]
 
 [sub_resource type="CapsuleShape3D" id="2"]
 height = 1.8
@@ -290,7 +293,6 @@ collision_layer = 0
 shape = SubResource("CylinderShape3D_06mnu")
 
 [node name="InteractionComponent" type="Node3D" parent="." unique_id=478816718]
-visible = false
 script = ExtResource("9_5qrx2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="InteractionComponent" unique_id=1005089652]
@@ -307,4 +309,13 @@ script = ExtResource("10_b32pr")
 [node name="AnimationComponent" type="Node" parent="." unique_id=282952702]
 script = ExtResource("11_hbkom")
 
-[connection signal="body_entered" from="PickupArea" to="." method="_on_pickup_area_body_entered"]
+[node name="PickupComponent" type="Node" parent="." unique_id=300000001]
+script = ExtResource("12_pickup")
+
+[node name="HotbarInputComponent" type="Node" parent="." unique_id=300000002]
+script = ExtResource("13_hotbar")
+
+[node name="PlacementGhostComponent" type="Node" parent="." unique_id=300000003]
+script = ExtResource("14_ghost")
+
+[connection signal="body_entered" from="PickupArea" to="PickupComponent" method="_on_body_entered"]

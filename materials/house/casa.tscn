@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://ddqq1gba17h4b"]
+
+[ext_resource type="PackedScene" uid="uid://h30fsjgkxoiv" path="res://materials/house/House (6).gltf" id="1_o4u2t"]
+[ext_resource type="Script" uid="uid://8hbsltokf77" path="res://materials/house/casa.gd" id="2_casa"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_porta1"]
+size = Vector3(0.8, 1, 0.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_porta2"]
+size = Vector3(0.8, 1, 0.8)
+
+[node name="Node3D" type="StaticBody3D" unique_id=1062090547]
+script = ExtResource("2_casa")
+
+[node name="blockbench_export" parent="." unique_id=652767140 instance=ExtResource("1_o4u2t")]
+
+[node name="ZonaPorta1" type="Area3D" parent="." unique_id=100000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5901809, 0.25139546, 2.257158)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ZonaPorta1" unique_id=100000002]
+shape = SubResource("BoxShape3D_porta1")
+
+[node name="ZonaPorta2" type="Area3D" parent="." unique_id=100000003]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5146048, 0.26446927, -1.8630013)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ZonaPorta2" unique_id=100000004]
+shape = SubResource("BoxShape3D_porta2")

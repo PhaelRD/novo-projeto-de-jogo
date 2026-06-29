@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="RecipeIngredient" format=3]
 
-[ext_resource type="Resource" uid="uid://cfu6ejp5bl530" path="res://items/madeira.tres" id="1_madeira"]
-[ext_resource type="Script" path="res://crafting/scripts/recipe_ingredient.gd" id="2_script"]
+[ext_resource type="Resource" uid="uid://cfu6ejp5bl530" path="res://items/madeira/madeira.tres" id="1_madeira"]
+[ext_resource type="Script" uid="uid://c7nf45u5rbbah" path="res://crafting/scripts/recipe_ingredient.gd" id="2_script"]
 
 [resource]
 script = ExtResource("2_script")

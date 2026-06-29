@@ -2,146 +2,112 @@ extends CharacterBody3D
 class_name Player
 
 # --- Exportações ---
-@export var starting_axe: ItemDefinition 
+@export var starting_axe: ItemDefinition
 @export var toggle_action: StringName = &"toggle_inventory"
 
 # --- Componentes e Nós ---
-@onready var inventory_panel: ModularInventoryPanel = $CanvasLayer/ModularInventoryPanel
-@onready var hotbar: ModularHotbar = $CanvasLayer/ModularHotbar
-@onready var inventory_component = $InventoryComponent 
+@onready var inventory_panel: ModularInventoryPanel  = $CanvasLayer/ModularInventoryPanel
+@onready var hotbar:          ModularHotbar          = $CanvasLayer/ModularHotbar
+@onready var inventory_component                     = $InventoryComponent
+@onready var crafting_panel:  CraftingPanel          = $CanvasLayer/CraftingPanel
+@onready var movement:        MovementComponent      = $MovementComponent
+@onready var animations:      AnimationComponent     = $AnimationComponent
+@onready var interaction:     InteractionComponent   = $InteractionComponent
+@onready var animated_sprite                         = $AnimatedSprite3D
+@onready var stamina_bar:     StaminaBar             = $CanvasLayer/StaminaBar
 
-# O PAINEL DE CRAFT AGORA É PEGO DIRETO DA CENA! (Jeito limpo e organizado)
-@onready var crafting_panel: CraftingPanel = $CanvasLayer/CraftingPanel
+# --- Componentes novos (definidos na cena) ---
+@onready var _hotbar_input: HotbarInputComponent     = $HotbarInputComponent
+@onready var _placement: PlacementGhostComponent     = $PlacementGhostComponent
 
-@onready var movement: MovementComponent = $MovementComponent
-@onready var animations: AnimationComponent = $AnimationComponent
-@onready var interaction: InteractionComponent = $InteractionComponent
-@onready var animated_sprite = $AnimatedSprite3D
+# --- Estado ---
+var current_interactable: Node3D = null  # Objeto aberto no momento (ex: baú)
 
-# Referências de UI (Stamina)
-@onready var stamina_bar: StaminaBar = $CanvasLayer/StaminaBar
-
-# NOVA VARIÁVEL: Guarda o objeto aberto no momento (ex: Baú)
-var current_interactable: Node3D = null
-
+# ==========================================
 func _ready() -> void:
 	add_to_group("persist")
 	animations.sprite = animated_sprite
 	animations.setup()
-	
-	# Garante que os painéis comecem invisíveis na hora do play
-	if inventory_panel:
-		inventory_panel.visible = false
-	if crafting_panel:
-		crafting_panel.visible = false
-	
+
+	if inventory_panel: inventory_panel.visible = false
+	if crafting_panel:  crafting_panel.visible  = false
+
+	# Configura HotbarInputComponent
+	_hotbar_input.hotbar = hotbar
+
+	# Configura PlacementGhostComponent
+	_placement.interaction         = interaction
+	_placement.hotbar              = hotbar
+	_placement.inventory_component = inventory_component
+	_placement.inventory_panel     = inventory_panel
+
+	# PickupComponent: o sinal já está conectado no .tscn; só passa o inventário
+	var pickup = get_node_or_null("PickupComponent") as PickupComponent
+	if pickup:
+		pickup._inventory_component = inventory_component
+
+	# Inventário
 	if inventory_component:
 		if inventory_component.inventory != null:
 			call_deferred("_on_inventory_ready", inventory_component.inventory)
 		else:
 			inventory_component.inventory_ready.connect(_on_inventory_ready)
-			
+
 	if hotbar:
 		hotbar.selection_changed.connect(_atualizar_visual_hotbar)
 		call_deferred("_atualizar_visual_hotbar", hotbar.selected_index)
 
+# ==========================================
 func _unhandled_input(event: InputEvent) -> void:
-	# --- LÓGICA DE ABRIR/FECHAR INVENTÁRIO DO PLAYER ---
+	# --- Abrir/Fechar Inventário ---
 	if event.is_action_pressed(toggle_action):
 		toggle_inventory()
 		get_viewport().set_input_as_handled()
-		return 
+		return
 
-	# --- LÓGICA DE TROCAR ITEM NA HOTBAR ---
-	if hotbar:
-		# 1. Troca pelos números do teclado (1 a 9)
-		for i in range(1, 10):
-			var action_name = "hotbar_" + str(i)
-			if InputMap.has_action(action_name) and event.is_action_pressed(action_name):
-				hotbar.selected_index = i - 1
-				get_viewport().set_input_as_handled()
-				return 
-				
-		# 2. Troca pela rodinha do mouse (Scroll)
-		if event is InputEventMouseButton and event.pressed:
-			var total_slots = 9
-			if hotbar.slots_container:
-				total_slots = hotbar.slots_container.get_child_count()
-				
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				hotbar.selected_index = (hotbar.selected_index - 1 + total_slots) % total_slots
-				get_viewport().set_input_as_handled()
-				return
-			elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				hotbar.selected_index = (hotbar.selected_index + 1) % total_slots
-				get_viewport().set_input_as_handled()
-				return
+	# --- Hotbar (scroll + teclas 1–9) ---
+	if _hotbar_input.handle_input(event):
+		get_viewport().set_input_as_handled()
+		return
 
-	# Identifica qual botão foi apertado
+	# --- Interação e Uso de Itens ---
 	var is_left_click = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed
-	var is_e_key = event is InputEventKey and event.keycode == KEY_E and event.pressed
+	var is_e_key      = event is InputEventKey      and event.keycode == KEY_E and event.pressed
 
-	# --- LÓGICA DE INTERAÇÃO E USO DE ITENS ---
 	if is_left_click or is_e_key:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED or Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
-			
 			var target_info = interaction.get_target_info()
-			var body = target_info.get("collider")
-			
-			# SE APERTOU 'E':
+			var body        = target_info.get("collider")
+
+			# Tecla E: interage com objeto ou abre inventário
 			if is_e_key:
 				if body and body.is_in_group("interactable") and body.has_method("interact"):
-					body.interact(self) # Aperta E no Baú -> Abre o baú
+					body.interact(self)
 				else:
-					toggle_inventory()  # Aperta E longe do Baú -> Abre o Inventário
-					
+					toggle_inventory()
 				get_viewport().set_input_as_handled()
 				return
-				
-			# SE DEU CLIQUE ESQUERDO:
+
+			# Clique esquerdo: usa item, depois tenta interact() se o item não consumiu
 			if is_left_click:
-				var slot = _get_held_slot()
+				var slot      = _get_held_slot()
 				var used_item = false
-				
-				# 1. Tenta usar o item da mão primeiro (machadada, plantar, etc)
+
 				if slot and slot.item and slot.item.has_method("use"):
 					used_item = slot.item.use(self, target_info)
-					if used_item and hotbar: 
+					if used_item and hotbar:
 						_atualizar_visual_hotbar(hotbar.selected_index)
-				
-				# 2. Se a mão estava vazia ou o item não fez nada, tenta interagir!
+
 				if not used_item:
 					if body and body.is_in_group("interactable") and body.has_method("interact"):
-						body.interact(self) # Clicou no baú -> Abre o baú
-					
-					# O clique no nada não abre mais o inventário!
-						
+						body.interact(self)
+
 				get_viewport().set_input_as_handled()
 
-func toggle_inventory() -> void:
-	# 1. Se tem um BAÚ ABERTO, a prioridade desta tecla é fechá-lo!
-	if is_instance_valid(current_interactable) and current_interactable.has_method("close_chest"):
-		current_interactable.close_chest(self)
-		return
-	current_interactable = null # Limpa por segurança
-		
-	# 2. Se não tem baú aberto, abre/fecha o Inventário + Crafting normalmente
-	if not inventory_panel: return
-	
-	var vai_abrir = not inventory_panel.visible
-	
-	inventory_panel.visible = vai_abrir
-	if crafting_panel:
-		crafting_panel.visible = vai_abrir
-	
-	if vai_abrir:
-		InputMode.ui()      
-	else:
-		InputMode.game()    
-
+# ==========================================
 func _physics_process(delta: float) -> void:
 	var input_dir = Vector3.ZERO
-	
+
 	if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		input_dir = Vector3(
 			Input.get_action_strength("move_right") - Input.get_action_strength("move_left"),
@@ -150,57 +116,65 @@ func _physics_process(delta: float) -> void:
 		).normalized()
 
 	var real_move_dir = movement.handle_movement(self, input_dir, delta)
-	
 	animations.update_animation(input_dir)
 	interaction.update_grid(global_position, real_move_dir)
+	_placement.update(global_position)
 
+# ==========================================
+func toggle_inventory() -> void:
+	if is_instance_valid(current_interactable) and current_interactable.has_method("close_chest"):
+		current_interactable.close_chest(self)
+		return
+	current_interactable = null
+
+	if not inventory_panel: return
+	var vai_abrir = not inventory_panel.visible
+	inventory_panel.visible = vai_abrir
+	if crafting_panel:
+		crafting_panel.visible = vai_abrir
+
+	if vai_abrir:
+		InputMode.ui()
+	else:
+		InputMode.game()
+
+# ==========================================
+# HELPERS
+# ==========================================
 func _get_held_slot() -> SlotData:
 	if not hotbar or not inventory_component: return null
 	var inv: Inventory = inventory_component.get_inventory()
 	if not inv: return null
 	return inv.get_slot(hotbar.get_selected_global_index())
 
-func _on_inventory_ready(inv):
-	await get_tree().process_frame
-	if starting_axe: 
-		inv.add_item(starting_axe, 1)
-
-func _on_pickup_area_body_entered(body: Node3D) -> void:
-	if body.is_in_group("dropped_item") and inventory_component and inventory_component.inventory:
-		var remaining = inventory_component.inventory.add_item(body.item_, body.count)
-		if remaining == 0:
-			body.queue_free()
-		elif remaining < body.count:
-			body.count = remaining
-
 func _atualizar_visual_hotbar(novo_indice: int) -> void:
 	if not hotbar or not hotbar.slots_container: return
 	var slots = hotbar.slots_container.get_children()
 	for i in range(slots.size()):
-		var slot_ui = slots[i]
-		if i == novo_indice:
-			slot_ui.modulate = Color(1.2, 1.2, 0.5) 
-		else:
-			slot_ui.modulate = Color(1.0, 1.0, 1.0)
+		slots[i].modulate = Color(1.2, 1.2, 0.5) if i == novo_indice else Color(1.0, 1.0, 1.0)
+
+func _on_inventory_ready(inv) -> void:
+	await get_tree().process_frame
+	if starting_axe:
+		inv.add_item(starting_axe, 1)
 
 # ==========================================
-# SISTEMA DE SAVE / LOAD DO PLAYER
+# SAVE / LOAD
 # ==========================================
-
 func get_save_data() -> Dictionary:
 	var inv_data = []
 	var inv: Inventory = inventory_component.get_inventory()
-	
+
 	if inv:
 		for i in range(inv.slots.size()):
 			var slot = inv.slots[i]
 			if slot and slot.item:
 				inv_data.append({
 					"index": i,
-					"item_path": slot.item.resource_path, 
+					"item_path": slot.item.resource_path,
 					"count": slot.count
 				})
-				
+
 	return {
 		"pos_x": global_position.x,
 		"pos_y": global_position.y,
@@ -211,20 +185,16 @@ func get_save_data() -> Dictionary:
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
-	
+
 	if stamina_bar:
-		if dados.has("stamina"):
-			stamina_bar.load_save_data(dados["stamina"])
-		else:
-			stamina_bar.load_save_data(stamina_bar.max_stamina)
-	
+		stamina_bar.load_save_data(dados.get("stamina", stamina_bar.max_stamina))
+
 	if dados.has("inventory"):
 		var inv: Inventory = inventory_component.get_inventory()
 		if inv:
-			inv.clear() 
+			inv.clear()
 			for item_data in dados["inventory"]:
 				var item_res = load(item_data["item_path"]) as ItemDefinition
 				if item_res:
 					inv.set_slot(item_data["index"], item_res, item_data["count"])
-					
 			if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)

@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://dnirhstm83bik"]
 
 [ext_resource type="Script" uid="uid://bxqhsnj14w6ws" path="res://materials/tree/tree.gd" id="1_44ud8"]
-[ext_resource type="Resource" uid="uid://cfu6ejp5bl530" path="res://items/madeira.tres" id="2_ind6k"]
+[ext_resource type="Resource" uid="uid://cfu6ejp5bl530" path="res://items/madeira/madeira.tres" id="2_ind6k"]
 [ext_resource type="Texture2D" uid="uid://cv2cvqlmnawcn" path="res://materials/tree/Sprite-0001.png" id="3_6vbnm"]
+[ext_resource type="Resource" uid="uid://db5dmnbqmkxfb" path="res://items/maça/maça.tres" id="3_66brq"]
 [ext_resource type="Texture2D" uid="uid://42nwry8ys2ip" path="res://materials/tree/Sprite-0002.png" id="4_bcqui"]
 [ext_resource type="Texture2D" uid="uid://cmg1mg3vd6r1m" path="res://materials/tree/Sprite-0003.png" id="5_bgygo"]
 
@@ -11,6 +12,7 @@
 [node name="Tree" type="StaticBody3D" unique_id=2004484642 groups=["interactable", "persist"]]
 script = ExtResource("1_44ud8")
 wood_item = ExtResource("2_ind6k")
+apple_item = ExtResource("3_66brq")
 seed_item_path = "uid://c6b2btv3phs27"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=357271246]

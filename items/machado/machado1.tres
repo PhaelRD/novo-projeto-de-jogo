@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="ToolItemDefinition" format=3 uid="uid://c4jytv4m8cpwd"]
+[gd_resource type="Resource" format=3 uid="uid://c4jytv4m8cpwd"]
 
 [ext_resource type="Texture2D" uid="uid://5xh686hou3yl" path="res://items/machado/machado1.png" id="1_br06c"]
-[ext_resource type="Script" uid="uid://byv3kcrvvt3h2" path="res://items/machado/tool_item_definition.gd" id="2_fvtw0"]
+[ext_resource type="Script" uid="uid://kesk2576oruq" path="res://items/definitions/tool_item_definition.gd" id="2_fvtw0"]
 
 [resource]
 script = ExtResource("2_fvtw0")

@@ -2,9 +2,10 @@ extends StaticBody3D
 
 # --- Exportações ---
 @export var wood_item: ItemDefinition 
+@export var apple_item: ItemDefinition  ## Maçã dropada ao cortar a árvore adulta (100%)
 @export_file("*.tres") var seed_item_path: String 
 @export var max_health: int = 10 
-@export var drop_amount: int = 2 
+@export var drop_amount: int = 4 
 
 # --- Referências dos 3 Sprites ---
 @onready var sprite_seed: Sprite3D = $SpriteSeed
@@ -70,6 +71,7 @@ func _shake_tree() -> void:
 
 func _chop_down() -> void:
 	if growth_stage == 2:
+		# Drop da madeira
 		if wood_item and dropped_item_scene:
 			for i in range(drop_amount):
 				var drop = dropped_item_scene.instantiate()
@@ -77,7 +79,8 @@ func _chop_down() -> void:
 				drop.count = 1
 				get_tree().current_scene.add_child(drop)
 				drop.global_position = global_position + Vector3(randf_range(-0.5, 0.5), 0.5, randf_range(-0.5, 0.5))
-				
+		
+		# Drop da semente
 		if seed_item_path != "" and dropped_item_scene:
 			var seed_item = load(seed_item_path) as ItemDefinition
 			if seed_item:
@@ -86,7 +89,16 @@ func _chop_down() -> void:
 				drop_seed.count = 1
 				get_tree().current_scene.add_child(drop_seed)
 				drop_seed.global_position = global_position + Vector3(0, 0.6, 0)
-			
+
+		# Drop da maçã — 100% de chance ao cortar árvore adulta
+		if apple_item and dropped_item_scene:
+			var drop_apple = dropped_item_scene.instantiate()
+			drop_apple.item_ = apple_item
+			drop_apple.count = 1
+			get_tree().current_scene.add_child(drop_apple)
+			drop_apple.global_position = global_position + Vector3(randf_range(-0.3, 0.3), 0.8, randf_range(-0.3, 0.3))
+			print("🍎 Árvore derrubada — maçã dropada!")
+
 	queue_free()
 
 # --- SISTEMA DE CRESCIMENTO (Troca de Sprites) ---
