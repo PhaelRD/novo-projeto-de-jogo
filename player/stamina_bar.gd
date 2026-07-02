@@ -8,6 +8,8 @@ var current_stamina: int = 200
 func _ready() -> void:
 	max_value = max_stamina
 	value = current_stamina
+	# Restaura a stamina ao máximo quando um novo dia começa
+	TimeManager.day_changed.connect(_on_new_day)
 	
 	# 1. Torna a barra VERTICAL (Enche de baixo para cima, esvazia descendo)
 	fill_mode = ProgressBar.FILL_BOTTOM_TO_TOP
@@ -75,3 +77,7 @@ func get_save_data() -> int:
 func load_save_data(saved_stamina: int) -> void:
 	current_stamina = saved_stamina
 	value = current_stamina
+
+# --- SISTEMA DE DIA/NOITE ---
+func _on_new_day(_day: int, _season: int, _year: int) -> void:
+	restore(max_stamina)

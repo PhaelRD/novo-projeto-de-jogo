@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="Novo Projeto de Jogo"
-run/main_scene="uid://drn5mcr27bo8t"
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
+TimeManager="*res://systems/day_night/scripts/time_manager.gd"
 TreeWatcher="*uid://byto6ql37kfie"
 DragDropSystem="*uid://by65p4vigqgcg"
 InputMode="*uid://c4kxikxn060f4"

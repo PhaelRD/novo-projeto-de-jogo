@@ -4,8 +4,13 @@ extends StaticBody3D
 @export var wood_item: ItemDefinition 
 @export var apple_item: ItemDefinition  ## Maçã dropada ao cortar a árvore adulta (100%)
 @export_file("*.tres") var seed_item_path: String 
+@export_category("Configuração de Quebra")
 @export var max_health: int = 10 
 @export var drop_amount: int = 4 
+@export var apple_drop_amount: int = 1 ## Quantidade de maçãs dropadas ao cortar a árvore adulta
+
+@export_category("Configuração de Crescimento")
+@export var days_per_stage: int = 3 ## Dias necessários para avançar de semente -> broto, e broto -> adulta
 
 # --- Referências dos 3 Sprites ---
 @onready var sprite_seed: Sprite3D = $SpriteSeed
@@ -22,7 +27,7 @@ var _shake_tween: Tween
 var _original_positions: Dictionary = {}
 
 var growth_stage: int = 2 # 0 = Semente, 1 = Broto, 2 = Adulta
-var grow_timer: Timer
+var _days_in_current_stage: int = 0
 
 func _ready() -> void:
 	add_to_group("persist")
@@ -37,8 +42,8 @@ func _ready() -> void:
 		
 	_atualizar_visual_crescimento()
 	
-	if growth_stage < 2:
-		_iniciar_crescimento()
+	if TimeManager and not TimeManager.day_changed.is_connected(_on_new_day):
+		TimeManager.day_changed.connect(_on_new_day)
 
 func hit_with_axe(damage: int) -> void:
 	_current_health -= damage
@@ -90,14 +95,15 @@ func _chop_down() -> void:
 				get_tree().current_scene.add_child(drop_seed)
 				drop_seed.global_position = global_position + Vector3(0, 0.6, 0)
 
-		# Drop da maçã — 100% de chance ao cortar árvore adulta
-		if apple_item and dropped_item_scene:
-			var drop_apple = dropped_item_scene.instantiate()
-			drop_apple.item_ = apple_item
-			drop_apple.count = 1
-			get_tree().current_scene.add_child(drop_apple)
-			drop_apple.global_position = global_position + Vector3(randf_range(-0.3, 0.3), 0.8, randf_range(-0.3, 0.3))
-			print("🍎 Árvore derrubada — maçã dropada!")
+		# Drop da maçã
+		if apple_item and dropped_item_scene and apple_drop_amount > 0:
+			for i in range(apple_drop_amount):
+				var drop_apple = dropped_item_scene.instantiate()
+				drop_apple.item_ = apple_item
+				drop_apple.count = 1
+				get_tree().current_scene.add_child(drop_apple)
+				drop_apple.global_position = global_position + Vector3(randf_range(-0.4, 0.4), 0.8, randf_range(-0.4, 0.4))
+			print("🍎 Árvore derrubada — %d maçã(s) dropada(s)!" % apple_drop_amount)
 
 	queue_free()
 
@@ -119,22 +125,17 @@ func _atualizar_visual_crescimento() -> void:
 		if sprite_adult: sprite_adult.visible = true
 		if collision_shape: collision_shape.disabled = false
 
-func _iniciar_crescimento() -> void:
-	if grow_timer: return
-	grow_timer = Timer.new()
-	grow_timer.wait_time = 10.0 
-	grow_timer.autostart = true
-	grow_timer.timeout.connect(_crescer)
-	add_child(grow_timer)
+func _on_new_day(_day: int, _season: int, _year: int) -> void:
+	if growth_stage < 2:
+		_days_in_current_stage += 1
+		if _days_in_current_stage >= days_per_stage:
+			_crescer()
 
 func _crescer() -> void:
 	growth_stage += 1
+	_days_in_current_stage = 0
 	_current_health = max_health 
 	_atualizar_visual_crescimento()
-	
-	if growth_stage >= 2:
-		grow_timer.stop()
-		grow_timer.queue_free()
 
 # --- SISTEMA DE SAVE DA ÁRVORE ---
 func get_save_data() -> Dictionary:
@@ -144,13 +145,14 @@ func get_save_data() -> Dictionary:
 		"pos_y": global_position.y,
 		"pos_z": global_position.z,
 		"health": _current_health,
-		"growth_stage": growth_stage
+		"growth_stage": growth_stage,
+		"days_in_stage": _days_in_current_stage
 	}
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
 	_current_health = dados["health"]
 	growth_stage = dados["growth_stage"]
+	if dados.has("days_in_stage"):
+		_days_in_current_stage = dados["days_in_stage"]
 	_atualizar_visual_crescimento()
-	if growth_stage < 2:
-		_iniciar_crescimento()

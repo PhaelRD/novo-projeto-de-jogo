@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://ddnycl00001"]
+
+[ext_resource type="Script" path="res://systems/day_night/ui/day_night_cycle.gd" id="1_dnc"]
+[ext_resource type="PackedScene" path="res://systems/day_night/ui/clock_display.tscn" id="2_clk"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_001"]
+sky_top_color = Color(0.3, 0.55, 0.9, 1)
+sky_horizon_color = Color(0.7, 0.85, 1, 1)
+sky_curve = 0.15
+ground_bottom_color = Color(0.08, 0.08, 0.08, 1)
+ground_horizon_color = Color(0.3, 0.27, 0.22, 1)
+ground_curve = 0.02
+sun_angle_max = 30.0
+sun_curve = 0.15
+
+[sub_resource type="Sky" id="Sky_001"]
+sky_material = SubResource("ProceduralSkyMaterial_001")
+process_mode = 0
+
+[sub_resource type="Environment" id="Environment_001"]
+background_mode = 2
+sky = SubResource("Sky_001")
+ambient_light_source = 3
+ambient_light_color = Color(0.5, 0.6, 0.45, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 1
+tonemap_exposure = 1.0
+tonemap_white = 6.0
+glow_enabled = false
+fog_enabled = false
+
+[node name="DayNightCycle" type="Node3D"]
+script = ExtResource("1_dnc")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_001")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.342, 0.94, 0, -0.94, 0.342, 0, 0, 0)
+light_color = Color(1, 0.97, 0.85, 1)
+light_energy = 1.0
+light_bake_mode = 2
+shadow_enabled = true
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, -0.342, -0.94, 0, 0.94, -0.342, 0, 0, 0)
+light_color = Color(0.4, 0.5, 0.8, 1)
+light_energy = 0.15
+shadow_enabled = false
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="NightOverlay" type="ColorRect" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0)
+mouse_filter = 2
+
+[node name="ClockDisplayAnchor" type="Control" parent="CanvasLayer"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -145.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 90.0
+mouse_filter = 2
+
+[node name="ClockDisplay" parent="CanvasLayer/ClockDisplayAnchor" instance=ExtResource("2_clk")]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0

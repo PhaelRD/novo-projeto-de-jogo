@@ -14,6 +14,7 @@ script = ExtResource("1_44ud8")
 wood_item = ExtResource("2_ind6k")
 apple_item = ExtResource("3_66brq")
 seed_item_path = "uid://c6b2btv3phs27"
+days_per_stage = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=357271246]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

@@ -10,6 +10,7 @@ var dropped_item_scene = preload("res://addons/modular_inventory_system/world/dr
 
 @onready var inventory_component: InventoryComponent = $InventoryComponent
 @onready var chest_panel: ModularInventoryPanel = $CanvasLayer/ChestPanel
+@onready var chest_canvas: CanvasLayer = $CanvasLayer
 @onready var animation_player: AnimationPlayer = find_child("AnimationPlayer", true, false)
 
 var is_open: bool = false
@@ -19,10 +20,11 @@ func _ready() -> void:
 		add_to_group("persist")
 	if not is_in_group("interactable"):
 		add_to_group("interactable")
-		
-	# NOVA LINHA: Garante que a UI do baú comece invisível ao ser colocado no chão!
-	if chest_panel:
-		chest_panel.visible = false
+	
+	# Esconde o CanvasLayer inteiro — remove todos os slots da árvore de UI
+	# Isso impede que o DragDropSystem encontre os slots do baú como alvos válidos
+	if chest_canvas:
+		chest_canvas.visible = false
 
 func interact(player: Player) -> void:
 	if is_open:
@@ -52,13 +54,14 @@ func open_chest(player: Player) -> void:
 	if chest_panel.has_method("_on_inventory_attached"):
 		chest_panel._on_inventory_attached(chest_inv)
 	
-	# MÁGICA VISUAL AQUI:
-	player.inventory_panel.visible = true # Mostra Inventário
+	player.inventory_panel.visible = true
 	
 	if "crafting_panel" in player and player.crafting_panel:
-		player.crafting_panel.visible = false # Esconde Crafting!
-		
-	chest_panel.visible = true # Mostra o Baú
+		player.crafting_panel.visible = false
+	
+	# Mostra o CanvasLayer inteiro — registra os slots como alvos válidos
+	chest_canvas.visible = true
+	chest_panel.visible = true
 
 	InputMode.ui()
 
@@ -73,8 +76,11 @@ func close_chest(player: Player) -> void:
 		animation_player.play_backwards("animation")
 	
 	player.inventory_panel.visible = false
-	chest_panel.visible = false
 	chest_panel.source_component = null
+	chest_panel.visible = false
+	# Esconde o CanvasLayer inteiro — remove os slots do sistema de UI completamente
+	# sem isso, o DragDropSystem encontra os slots via get_global_rect() mesmo invisíveis
+	chest_canvas.visible = false
 	
 	InputMode.game()
 
@@ -93,6 +99,7 @@ func break_chest() -> void:
 	if is_open:
 		chest_panel.visible = false
 		chest_panel.source_component = null
+		chest_canvas.visible = false
 		InputMode.game()
 
 	var inv = inventory_component.inventory

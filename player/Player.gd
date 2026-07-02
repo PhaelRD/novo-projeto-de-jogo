@@ -22,6 +22,7 @@ class_name Player
 
 # --- Estado ---
 var current_interactable: Node3D = null  # Objeto aberto no momento (ex: baú)
+var _has_loaded_save: bool = false
 
 # ==========================================
 func _ready() -> void:
@@ -31,6 +32,10 @@ func _ready() -> void:
 
 	if inventory_panel: inventory_panel.visible = false
 	if crafting_panel:  crafting_panel.visible  = false
+	
+	# Garante que o jogo comece no modo de jogo (mouse capturado)
+	if InputMode.has_method("game"):
+		InputMode.game()
 
 	# Configura HotbarInputComponent
 	_hotbar_input.hotbar = hotbar
@@ -155,7 +160,7 @@ func _atualizar_visual_hotbar(novo_indice: int) -> void:
 
 func _on_inventory_ready(inv) -> void:
 	await get_tree().process_frame
-	if starting_axe:
+	if starting_axe and not _has_loaded_save:
 		inv.add_item(starting_axe, 1)
 
 # ==========================================
@@ -184,6 +189,7 @@ func get_save_data() -> Dictionary:
 	}
 
 func load_save_data(dados: Dictionary) -> void:
+	_has_loaded_save = true
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
 
 	if stamina_bar:

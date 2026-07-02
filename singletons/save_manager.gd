@@ -2,6 +2,10 @@ extends Node
 
 const SAVE_PATH = "user://savegame.json"
 
+## Retorna true se existe um arquivo de save salvo
+func has_save() -> bool:
+	return FileAccess.file_exists(SAVE_PATH)
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		if event.keycode == KEY_F5:
@@ -13,7 +17,8 @@ func save_game():
 	var save_dict = {
 		"current_scene": get_tree().current_scene.scene_file_path,
 		"player": {},
-		"world_objects": [] # Aqui vão ficar as árvores!
+		"world_objects": [], # Aqui vão ficar as árvores!
+		"time": TimeManager.get_save_data(),
 	}
 	
 	var save_nodes = get_tree().get_nodes_in_group("persist")
@@ -47,6 +52,10 @@ func load_game():
 	# Pega todo mundo que está vivo no mapa atual
 	var save_nodes = get_tree().get_nodes_in_group("persist")
 	
+	# --- LÓGICA DO TEMPO ---
+	if save_dict.has("time"):
+		TimeManager.load_save_data(save_dict["time"])
+
 	# --- LÓGICA DO PLAYER ---
 	for node in save_nodes:
 		if node is Player and save_dict.has("player"):

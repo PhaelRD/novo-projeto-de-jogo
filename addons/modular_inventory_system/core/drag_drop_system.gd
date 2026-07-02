@@ -221,7 +221,7 @@ func _find_player_node() -> Node3D:
 func _get_drop_target(pos: Vector2) -> Dictionary:
 	var targets = get_tree().get_nodes_in_group("inventory_drop_targets")
 	for t in targets:
-		if t is Control and t.get_global_rect().has_point(pos):
+		if t is Control and t.is_visible_in_tree() and t.get_global_rect().has_point(pos):
 			return {
 				"inventory": t.get_meta("inventory"),
 				"slot_index": t.get_meta("slot_index")

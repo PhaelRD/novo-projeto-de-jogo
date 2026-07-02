@@ -10,6 +10,11 @@ func use(player: CharacterBody3D, _target_info: Dictionary) -> bool:
 		push_warning("FoodItemDefinition: player não tem stamina_bar")
 		return false
 
+	# Verifica se a stamina já está cheia
+	if player.stamina_bar.current_stamina >= player.stamina_bar.max_stamina:
+		print("Stamina cheia! Não há necessidade de comer ", display_name)
+		return false
+
 	# Restaura a stamina
 	player.stamina_bar.restore(stamina_restore)
 	print("🍎 Comeu ", display_name, " — stamina restaurada: +", stamina_restore)
