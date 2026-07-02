@@ -1,0 +1,185 @@
+# Materiais — Casa Voxel
+
+newmtl parede
+Ka 0.141 0.132 0.114
+Kd 0.940 0.880 0.760
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl parede_sombra
+Ka 0.120 0.111 0.093
+Kd 0.800 0.740 0.620
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl madeira
+Ka 0.042 0.024 0.011
+Kd 0.280 0.160 0.070
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl madeira_media
+Ka 0.069 0.042 0.018
+Kd 0.460 0.280 0.120
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl telhado
+Ka 0.123 0.015 0.011
+Kd 0.820 0.100 0.070
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl telhado_escuro
+Ka 0.087 0.009 0.007
+Kd 0.580 0.060 0.050
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl telhado_listra
+Ka 0.105 0.012 0.009
+Kd 0.700 0.080 0.060
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl cumeeira
+Ka 0.083 0.007 0.006
+Kd 0.550 0.050 0.040
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl chamine_clara
+Ka 0.098 0.099 0.102
+Kd 0.650 0.660 0.680
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl chamine_escura
+Ka 0.063 0.065 0.068
+Kd 0.420 0.430 0.450
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl chamine_topo
+Ka 0.078 0.081 0.084
+Kd 0.520 0.540 0.560
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl vidro
+Ka 0.057 0.090 0.132
+Kd 0.380 0.600 0.880
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl vidro_reflexo
+Ka 0.083 0.111 0.144
+Kd 0.550 0.740 0.960
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl caixilho
+Ka 0.027 0.017 0.007
+Kd 0.180 0.110 0.050
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl porta
+Ka 0.045 0.026 0.012
+Kd 0.300 0.170 0.080
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl porta_painel
+Ka 0.033 0.018 0.007
+Kd 0.220 0.120 0.050
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl macaneta
+Ka 0.128 0.105 0.030
+Kd 0.850 0.700 0.200
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl toldo
+Ka 0.123 0.015 0.011
+Kd 0.820 0.100 0.070
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl toldo_borda
+Ka 0.087 0.009 0.007
+Kd 0.580 0.060 0.050
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl degrau
+Ka 0.093 0.069 0.039
+Kd 0.620 0.460 0.260
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl correio_poste
+Ka 0.066 0.042 0.015
+Kd 0.440 0.280 0.100
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl correio_caixa
+Ka 0.105 0.108 0.111
+Kd 0.700 0.720 0.740
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2
+
+newmtl correio_flag
+Ka 0.123 0.015 0.011
+Kd 0.820 0.100 0.070
+Ks 0.050 0.050 0.050
+Ns 15.0
+d 1.0
+illum 2

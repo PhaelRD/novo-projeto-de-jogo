@@ -1,0 +1,50 @@
+newmtl parede
+Kd 0.95 0.88 0.62
+
+newmtl parede_detalhe
+Kd 0.89 0.82 0.54
+
+newmtl parede_relevo
+Kd 0.84 0.77 0.50
+
+newmtl base
+Kd 0.65 0.69 0.76
+
+newmtl teto_borda
+Kd 0.43 0.47 0.53
+
+newmtl teto_chao
+Kd 0.63 0.66 0.71
+
+newmtl teto_linha
+Kd 0.53 0.57 0.62
+
+newmtl madeira_escura
+Kd 0.35 0.22 0.16
+
+newmtl chamine_base
+Kd 0.69 0.36 0.35
+
+newmtl chamine_topo
+Kd 0.54 0.25 0.25
+
+newmtl chamine_furo
+Kd 0.16 0.16 0.16
+
+newmtl porta
+Kd 0.24 0.69 0.43
+
+newmtl macaneta
+Kd 0.9 0.9 0.9
+
+newmtl janela_borda
+Kd 0.90 0.74 0.39
+
+newmtl janela_vidro
+Kd 0.35 0.60 0.88
+
+newmtl janela_brilho
+Kd 0.60 0.78 0.96
+
+newmtl toldo
+Kd 0.67 0.33 0.36
