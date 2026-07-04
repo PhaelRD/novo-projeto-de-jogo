@@ -195,6 +195,9 @@ shape = SubResource("2")
 
 [node name="AnimatedSprite3D" type="AnimatedSprite3D" parent="." unique_id=396199833]
 pixel_size = 0.025
+cast_shadow = 1
+shaded = true
+alpha_cut = 1
 billboard = 1
 sprite_frames = SubResource("3")
 animation = &"move_right"
@@ -206,6 +209,7 @@ capacity = 36
 metadata/_custom_type_script = "uid://bnfwaprwdmh1a"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=857074502]
+layer = 100
 
 [node name="ModularInventoryPanel" type="Control" parent="CanvasLayer" unique_id=448780225 node_paths=PackedStringArray("grid_container", "tooltip", "source_component")]
 layout_mode = 3
@@ -293,6 +297,7 @@ collision_layer = 0
 shape = SubResource("CylinderShape3D_06mnu")
 
 [node name="InteractionComponent" type="Node3D" parent="." unique_id=478816718]
+visible = false
 script = ExtResource("9_5qrx2")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="InteractionComponent" unique_id=1005089652]

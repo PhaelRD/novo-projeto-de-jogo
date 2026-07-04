@@ -22,17 +22,26 @@ shape = SubResource("CylinderShape3D_uy8cy")
 
 [node name="SpriteSeed" type="Sprite3D" parent="." unique_id=1350449082]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0.12926996, 0)
+cast_shadow = 1
 visible = false
+shaded = true
+alpha_cut = 1
 billboard = 2
 texture = ExtResource("3_6vbnm")
 
 [node name="SpriteAdult" type="Sprite3D" parent="." unique_id=95382943]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0.9572004, 0)
+cast_shadow = 1
+shaded = true
+alpha_cut = 1
 billboard = 2
 texture = ExtResource("5_bgygo")
 
 [node name="SpriteSprout" type="Sprite3D" parent="." unique_id=573324082]
 transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0.5298591, 0)
+cast_shadow = 1
 visible = false
+shaded = true
+alpha_cut = 1
 billboard = 2
 texture = ExtResource("4_bcqui")

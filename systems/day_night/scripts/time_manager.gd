@@ -7,9 +7,10 @@ const SLEEP_HOUR      : float = 2.0   # hora que força o novo dia (2h da manhã
 
 # 1 segundo real = 1 minuto in-game
 # Um dia cobre 20h in-game (6h → 2h) → 20×60 = 1200 segundos = 20 min reais ✓
-const TIME_SCALE : float = 1.0
+const TIME_SCALE : float = 30.0
 
 const SEASON_NAMES := ["Primavera", "Verão", "Outono", "Inverno"]
+const RAIN_CHANCES : Array[float] = [0.4, 0.2, 0.3, 0.1] # Chances de chuva por estação
 
 # ─── Estado ───────────────────────────────────────────────────────────────────
 var current_hour   : float = START_HOUR
@@ -17,6 +18,7 @@ var current_day    : int   = 1
 var current_season : int   = 0   # 0=Primavera  1=Verão  2=Outono  3=Inverno
 var current_year   : int   = 1
 var is_paused      : bool  = false
+var is_raining     : bool  = false
 
 # Evita emitir hour_changed vários frames no mesmo minuto
 var _last_emitted_minute : int = -1
@@ -28,6 +30,7 @@ signal hour_changed(hour: float)
 signal day_changed(day: int, season: int, year: int)
 signal season_changed(season: int, year: int)
 signal time_to_sleep()
+signal weather_changed(is_raining: bool)
 
 # ─── Ciclo ────────────────────────────────────────────────────────────────────
 func _process(delta: float) -> void:
@@ -68,6 +71,9 @@ func advance_day() -> void:
 		if current_season != old_season:
 			season_changed.emit(current_season, current_year)
 
+	is_raining = randf() < RAIN_CHANCES[current_season]
+	weather_changed.emit(is_raining)
+
 	day_changed.emit(current_day, current_season, current_year)
 	hour_changed.emit(current_hour)
 
@@ -92,10 +98,11 @@ func get_season_name() -> String:
 # ─── Save / Load ──────────────────────────────────────────────────────────────
 func get_save_data() -> Dictionary:
 	return {
-		"hour"   : current_hour,
-		"day"    : current_day,
-		"season" : current_season,
-		"year"   : current_year,
+		"hour"       : current_hour,
+		"day"        : current_day,
+		"season"     : current_season,
+		"year"       : current_year,
+		"is_raining" : is_raining,
 	}
 
 func load_save_data(d: Dictionary) -> void:
@@ -103,10 +110,12 @@ func load_save_data(d: Dictionary) -> void:
 	current_day          = d.get("day",    1)
 	current_season       = d.get("season", 0)
 	current_year         = d.get("year",   1)
+	is_raining           = d.get("is_raining", false)
 	_last_emitted_minute = -1
 	# Re-emite os sinais para que os listeners se atualizem imediatamente
 	hour_changed.emit(current_hour)
 	day_changed.emit(current_day, current_season, current_year)
+	weather_changed.emit(is_raining)
 
 ## Reseta o tempo para o estado inicial (Novo Jogo)
 func reset() -> void:
@@ -114,6 +123,8 @@ func reset() -> void:
 	current_day          = 1
 	current_season       = 0
 	current_year         = 1
+	is_raining           = false
 	_last_emitted_minute = -1
 	is_paused            = false
 	_day_advancing       = false
+	weather_changed.emit(is_raining)

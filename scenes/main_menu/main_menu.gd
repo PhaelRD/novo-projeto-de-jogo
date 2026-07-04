@@ -15,8 +15,16 @@ func _ready() -> void:
 	btn_new_game.pressed.connect(_on_new_game)
 	btn_load_game.pressed.connect(_on_load_game)
 
-	# Garante que o mouse esteja visível no menu
+	# Usa call_deferred para garantir que o mouse apareça após as transições de cena limparem,
+	# e adiciona focus automático para jogar por teclado/controle (caso a "seta" seja foco)
+	call_deferred("_setup_focus_and_mouse", save_exists)
+
+func _setup_focus_and_mouse(save_exists: bool) -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if save_exists:
+		btn_load_game.grab_focus()
+	else:
+		btn_new_game.grab_focus()
 
 func _on_new_game() -> void:
 	TimeManager.reset()
