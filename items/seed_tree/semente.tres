@@ -1,4 +1,4 @@
-[gd_resource type="Resource" format=3 uid="uid://c6b2btv3phs27"]
+[gd_resource type="Resource" script_class="SeedItemDefinition" format=3 uid="uid://c6b2btv3phs27"]
 
 [ext_resource type="Texture2D" uid="uid://vl2sq3uv8bxa" path="res://items/seed_tree/semente.png" id="1_rchyl"]
 [ext_resource type="PackedScene" uid="uid://dnirhstm83bik" path="res://materials/tree/tree.tscn" id="2_oyser"]
@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("3_2e78w")
+valid_terrain_ids = Array[int]([])
 id = "semente"
 display_name = "Semente"
 icon = ExtResource("1_rchyl")

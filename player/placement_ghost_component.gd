@@ -44,7 +44,11 @@ func update(player_pos: Vector3) -> void:
 	var target_info = interaction.get_target_info()
 	var target_pos  = target_info.get("position", player_pos)
 	var collider    = target_info.get("collider")
-	var is_valid    = _is_valid(collider)
+	var is_blocked  = target_info.get("is_blocked", false)
+	var is_valid    = _is_valid(collider, target_pos, item)
+	
+	if is_blocked:
+		is_valid = false
 
 	# Recria o ghost se o item mudou
 	if item != _last_item:
@@ -85,23 +89,57 @@ func _get_held_slot() -> SlotData:
 	if not inv: return null
 	return inv.get_slot(hotbar.get_selected_global_index())
 
-func _is_valid(collider: Node) -> bool:
+func _is_valid(collider: Node, target_pos: Vector3, item: ItemDefinition) -> bool:
+	# Validação específica inteligente para sementes
+	if item and item.has_method("check_soil_validity"):
+		var validity = item.check_soil_validity(target_pos, collider)
+		return validity[0]
+		
+	# Validação genérica para outros itens colocáveis (Cerca, Móveis)
+	# Confirma que estamos mirando em um nó que pertence a um TileMapLayer3D
+	var base_valid = false
 	if collider:
 		var n: Node = collider
 		while n:
-			if n.is_in_group("terrain"):
-				return true
+			if "runtime_api" in n and n.runtime_api != null:
+				base_valid = true
+				break
 			n = n.get_parent()
-		return false
-	return true
+			
+	return base_valid
 
 func _spawn_ghost(item: ItemDefinition) -> void:
 	_ghost_root            = item.placement_scene.instantiate()
 	_ghost_root.top_level  = true  # não herda a transform do player
 	_disable_collision(_ghost_root)
 	_stop_animations(_ghost_root)
+	
+	# 1. Adicionamos na cena (O que obriga o item a rodar seu _ready, caso tenha um)
 	get_tree().current_scene.add_child(_ghost_root)
+	
+	# 2. Agora sim, APÓS o _ready() do item rodar e colocar seus grupos (ex: baú), nós EXTERMINAMOS os grupos!
+	_strip_groups(_ghost_root)
+	
+	# 3. Pausamos a vida do fantasma para que scripts de árvores/baús não fiquem processando na mão do player
+	_disable_processing(_ghost_root)
+	
 	_last_item = item
+
+func _disable_processing(node: Node) -> void:
+	node.set_process(false)
+	node.set_physics_process(false)
+	for child in node.get_children():
+		_disable_processing(child)
+
+func _strip_groups(node: Node) -> void:
+	# Garante que o fantasma não seja salvo no disco (F5) nem atropele outras lógicas
+	if node.is_in_group("persist"): node.remove_from_group("persist")
+	if node.is_in_group("interactable"): node.remove_from_group("interactable")
+	if node.is_in_group("obstacle"): node.remove_from_group("obstacle")
+	if node.is_in_group("planted"): node.remove_from_group("planted")
+	
+	for child in node.get_children():
+		_strip_groups(child)
 
 func _make_mat(color: Color) -> StandardMaterial3D:
 	var mat              := StandardMaterial3D.new()
@@ -135,5 +173,8 @@ func _apply_material(node: Node, mat: StandardMaterial3D) -> void:
 				node.set_surface_override_material(i, mat)
 	elif node is Sprite3D or node is AnimatedSprite3D:
 		node.modulate = mat.albedo_color
+		# Fantasmas usam alpha menor que 0.5, então precisamos desativar o Alpha Cut (senão a engine deleta o sprite invisível)
+		node.alpha_cut = SpriteBase3D.ALPHA_CUT_DISABLED
+		node.shaded = false # Desliga sombras para o fantasma brilhar por conta
 	for child in node.get_children():
 		_apply_material(child, mat)

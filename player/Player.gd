@@ -2,7 +2,7 @@ extends CharacterBody3D
 class_name Player
 
 # --- Exportações ---
-@export var starting_axe: ItemDefinition
+@export var starting_items: Array[ItemDefinition] = []
 @export var toggle_action: StringName = &"toggle_inventory"
 
 # --- Componentes e Nós ---
@@ -160,8 +160,10 @@ func _atualizar_visual_hotbar(novo_indice: int) -> void:
 
 func _on_inventory_ready(inv) -> void:
 	await get_tree().process_frame
-	if starting_axe and not _has_loaded_save:
-		inv.add_item(starting_axe, 1)
+	if not _has_loaded_save:
+		for item in starting_items:
+			if item:
+				inv.add_item(item, 1)
 
 # ==========================================
 # SAVE / LOAD

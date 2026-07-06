@@ -2,6 +2,7 @@ extends ItemDefinition
 class_name PlaceableItemDefinition
 
 @export_category("Configurações de Construção")
+@export var valid_terrain_ids: Array[int] = [] ## Vazio = aceita qualquer chão. Preenchido (ex: [0]) = exige terreno específico.
 @export var stamina_cost: int = 0
 @export var require_floor: bool = true  ## Exige chão válido embaixo para colocar
 
@@ -14,45 +15,26 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 	var target_pos = target_info.get("position", Vector3.ZERO)
 	var collider   = target_info.get("collider")
 
-	# 2. Bloqueia se houver objeto não-terrain na posição alvo
-	# Nota: o InteractionComponent já recua a mira via raycast —
-	# este check é uma camada extra para objetos detectados pela Area3D.
-	if collider and not _is_terrain_body(collider):
-		print("Não posso colocar o objeto aqui, o espaço está ocupado!")
-		return false
-
 	if not placement_scene:
 		push_warning("Atenção: Este item não possui uma placement_scene configurada!")
 		return false
 
-	var base_y = target_pos.y
+	if target_info.get("is_blocked", false):
+		print("Construção falhou! Existe um objeto não-interagível na mira.")
+		return false
 
-	# 3. Procura o chão para não deixar o objeto flutuando
-	if require_floor:
-		var mapas = player.get_tree().get_nodes_in_group("terrain")
-		var found_floor = false
-
-		if mapas.size() > 0:
-			var tile_map = mapas[0]
-			if tile_map.runtime_api:
-				var player_y = player.global_position.y
-				for offset_y in [1.0, 0.5, 0.0, -0.5, -1.0, -1.5]:
-					var test_pos   = target_pos
-					test_pos.y     = player_y + offset_y
-					var check = tile_map.runtime_api.find_tile(test_pos, 0)  # 0 = FLOOR
-					if check != null:
-						base_y      = round(test_pos.y)
-						found_floor = true
-						break
-
-		if not found_floor:
-			print("Você precisa colocar este objeto sobre um chão válido!")
-			return false
+	var validity = check_soil_validity(target_pos, collider)
+	if not validity[0]:
+		print("Construção falhou! Este terreno não é adequado ou está ocupado.")
+		return false
+		
+	var base_y = validity[1]
 
 	# 4. Instancia e coloca no mundo
 	var new_object = placement_scene.instantiate()
 	player.get_tree().current_scene.add_child(new_object)
 	new_object.global_position = Vector3(target_pos.x, base_y, target_pos.z)
+	new_object.add_to_group("planted")
 
 	# 5. Rotação: vira para o player (snap em 90°)
 	var look_pos = player.global_position
@@ -68,12 +50,66 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 	print("Objeto colocado no mundo virado para o jogador!")
 	return true
 
-# Sobe a hierarquia de pais até encontrar o grupo "terrain".
-# Necessário porque TileMapLayer3D gera StaticBody3D filhos sem grupo.
-static func _is_terrain_body(node: Node) -> bool:
+# Retorna o TileMapLayer3D caso o collider seja parte de um.
+static func _get_tile_map_from_collider(node: Node) -> Node:
 	var n: Node = node
 	while n:
-		if n.is_in_group("terrain"):
-			return true
+		if "runtime_api" in n and n.runtime_api != null:
+			return n
 		n = n.get_parent()
-	return false
+	return null
+
+# Verifica no mapa se a coordenada repousa sobre um Terrain válido (se require_floor for true).
+func check_soil_validity(target_pos: Vector3, collider: Node) -> Array:
+	if not require_floor:
+		return [true, target_pos.y]
+		
+	var tile_map = _get_tile_map_from_collider(collider)
+	if not tile_map:
+		print("Placeable debug: O alvo não é um TileMap.")
+		return [false, target_pos.y]
+		
+	var tile_info = null
+	var base_y = target_pos.y
+	
+	for offset_y in [1.0, 0.5, 0.0, -0.5, -1.0, -1.5]:
+		var test_pos = target_pos
+		test_pos.y += offset_y
+		var check = tile_map.runtime_api.find_tile(test_pos, 0) # 0 = FLOOR
+		if check != null:
+			tile_info = check
+			base_y = round(test_pos.y)
+			break
+			
+	if tile_info == null:
+		print("Placeable debug: Nenhum tile encontrado na coluna pos: ", target_pos)
+		return [false, target_pos.y]
+		
+	# Se a lista estiver vazia, aceita qualquer terreno!
+	if valid_terrain_ids.is_empty():
+		return [true, base_y]
+		
+	var terrain = -1
+	if "terrain_id" in tile_info and tile_info.terrain_id != -1: 
+		terrain = tile_info.terrain_id
+	else:
+		var ts: TileSet = tile_map.settings.tileset
+		if ts:
+			var source = ts.get_source(tile_info.atlas_source_id) as TileSetAtlasSource
+			if source:
+				var tdata = source.get_tile_data(tile_info.atlas_coords, 0)
+				if tdata:
+					terrain = tdata.terrain
+					
+	if require_floor and terrain not in valid_terrain_ids:
+		return [false, base_y]
+		
+	# Verificação anti-empilhamento para itens sem colisão no Grid
+	if collider and collider.is_inside_tree():
+		var final_pos = Vector3(target_pos.x, base_y, target_pos.z)
+		for obj in collider.get_tree().get_nodes_in_group("planted"):
+			if obj.is_inside_tree() and obj.global_position.distance_to(final_pos) < 0.1:
+				print("Build debug: Espaço já contém um objeto.")
+				return [false, base_y]
+				
+	return [true, base_y]

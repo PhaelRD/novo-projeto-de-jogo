@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ToolItemDefinition" format=3 uid="uid://2tvlg4fknso4"]
+
+[ext_resource type="Script" uid="uid://kesk2576oruq" path="res://items/definitions/tool_item_definition.gd" id="1_8b7uk"]
+[ext_resource type="Texture2D" uid="uid://bxs2cxwxxw0c6" path="res://items/picareta/picareta.png" id="1_vo8by"]
+
+[resource]
+script = ExtResource("1_8b7uk")
+tool_type = "picareta"
+id = "picareta"
+display_name = "Picareta"
+icon = ExtResource("1_vo8by")
+metadata/_custom_type_script = "uid://buqjlq2vnh154"

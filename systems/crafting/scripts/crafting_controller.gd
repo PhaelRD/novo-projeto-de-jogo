@@ -1,7 +1,7 @@
 extends Node
 class_name CraftingController
 
-@export var crafting_panel_scene: PackedScene = preload("res://crafting/ui/crafting_panel.tscn")
+@export var crafting_panel_scene: PackedScene = preload("res://systems/crafting/ui/crafting_panel.tscn")
 var crafting_panel: CraftingPanel
 
 func _ready() -> void:

@@ -2,6 +2,7 @@ extends ItemDefinition
 class_name ToolItemDefinition
 
 @export_category("Configurações de Ferramenta")
+@export var tool_type: String = "axe" ## Tipo da ferramenta (axe, pickaxe, etc).
 @export var stamina_cost: int = 5  ## Stamina consumida por uso
 @export var damage: int = 1        ## Dano aplicado ao alvo
 
@@ -11,7 +12,7 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 		return false
 
 	var body = target_info.get("collider")
-	var tem_alvo_valido = body and body.is_in_group("interactable") and body.has_method("hit_with_axe")
+	var tem_alvo_valido = body and body.is_in_group("interactable") and (body.has_method("hit") or body.has_method("hit_with_axe"))
 
 	# Só consome stamina e anima se tiver alvo válido
 	if tem_alvo_valido:
@@ -20,7 +21,10 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 		if player.animated_sprite and player.animated_sprite.sprite_frames.has_animation("attack"):
 			player.animated_sprite.play("attack")
 
-		body.hit_with_axe(damage)
+		if body.has_method("hit"):
+			body.hit(tool_type, damage)
+		else:
+			body.hit_with_axe(damage)
 		return true  # Consumiu o clique — não chama interact()
 
 	# Sem alvo válido: libera o clique para interact() (ex: abre porta)

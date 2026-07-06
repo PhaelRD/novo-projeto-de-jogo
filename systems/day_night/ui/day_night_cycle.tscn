@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://4en6gw70w72s" path="res://systems/day_night/ui/day_night_cycle.gd" id="1_dnc"]
 [ext_resource type="PackedScene" uid="uid://dntclk00001" path="res://systems/day_night/ui/clock_display.tscn" id="2_clk"]
 [ext_resource type="Shader" uid="uid://d1f3jpgmy6106" path="res://systems/day_night/assets/dynamic_sky.gdshader" id="3_sky"]
-[ext_resource type="Shader" path="res://systems/day_night/assets/rain_effect.gdshader" id="4_rain"]
+[ext_resource type="Shader" uid="uid://qskmb6forjan" path="res://systems/day_night/assets/rain_effect.gdshader" id="4_rain"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sky"]
 shader = ExtResource("3_sky")
@@ -18,13 +18,7 @@ shader_parameter/sun_direction = Vector3(0, 1, 0)
 shader_parameter/moon_direction = Vector3(0, -1, 0)
 shader_parameter/cloud_direction = Vector2(1, 0.5)
 shader_parameter/cloud_speed = 0.03
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rain"]
-shader = ExtResource("4_rain")
-shader_parameter/rain_amount = 0.0
-shader_parameter/fall_speed = 3.5
-shader_parameter/slant = 0.15
-shader_parameter/rain_color = Color(0.8, 0.9, 1, 0.25)
+shader_parameter/lightning_amount = 0.0
 
 [sub_resource type="Sky" id="Sky_001"]
 sky_material = SubResource("ShaderMaterial_sky")
@@ -37,6 +31,13 @@ ambient_light_color = Color(0.5, 0.6, 0.45, 1)
 ambient_light_energy = 0.5
 tonemap_mode = 1
 tonemap_white = 6.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rain"]
+shader = ExtResource("4_rain")
+shader_parameter/rain_amount = 0.0
+shader_parameter/fall_speed = 3.5
+shader_parameter/slant = 0.15
+shader_parameter/rain_color = Color(0.8, 0.9, 1, 0.25)
 
 [node name="DayNightCycle" type="Node3D" unique_id=1059048476]
 script = ExtResource("1_dnc")
@@ -65,7 +66,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
 
-[node name="RainOverlay" type="ColorRect" parent="CanvasLayer"]
+[node name="RainOverlay" type="ColorRect" parent="CanvasLayer" unique_id=1946363265]
 material = SubResource("ShaderMaterial_rain")
 anchors_preset = 15
 anchor_right = 1.0

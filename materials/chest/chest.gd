@@ -88,12 +88,18 @@ func close_chest(player: Player) -> void:
 # SISTEMA DE QUEBRA E DROPS
 # ==========================================
 
-func hit_with_axe(damage: int) -> void:
+func hit(tool_type: String, damage: int) -> void:
+	if tool_type != "axe":
+		print("Use um machado para quebrar baús!")
+		return
 	health -= damage
 	print("Baú tomou dano! Vida restante: ", health)
 	
 	if health <= 0:
 		break_chest()
+
+func hit_with_axe(damage: int) -> void:
+	hit("axe", damage)
 
 func break_chest() -> void:
 	if is_open:

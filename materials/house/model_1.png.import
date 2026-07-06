@@ -2,20 +2,24 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3vf127dpkr43"
-path="res://.godot/imported/Dirt.png-76e9020fd115fe4158f6015f72de4b55.ctex"
+uid="uid://xh7l88g5ab1e"
+path.s3tc="res://.godot/imported/model_1.png-5ab214d03a6e8e05b828d3a4b7a45507.s3tc.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc"],
+"vram_texture": true
+}
+generator_parameters={
+"md5": "85d8e5017fa374edf5006c9710f2b230"
 }
 
 [deps]
 
-source_file="res://sprites/Dirt.png"
-dest_files=["res://.godot/imported/Dirt.png-76e9020fd115fe4158f6015f72de4b55.ctex"]
+source_file="res://materials/house/model_1.png"
+dest_files=["res://.godot/imported/model_1.png-5ab214d03a6e8e05b828d3a4b7a45507.s3tc.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
