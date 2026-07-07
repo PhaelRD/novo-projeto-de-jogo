@@ -19,6 +19,7 @@ func save_game():
 		"player": {},
 		"world_objects": [], # Aqui vão ficar as árvores!
 		"time": TimeManager.get_save_data(),
+		"tilemaps": {}
 	}
 	
 	var save_nodes = get_tree().get_nodes_in_group("persist")
@@ -30,6 +31,22 @@ func save_game():
 		elif node.has_method("get_save_data"):
 			save_dict["world_objects"].append(node.get_save_data())
 			
+	# --- SALVAR TILEMAPS ---
+	var tilemaps = get_tree().current_scene.find_children("*", "TileMapLayer3D", true, false)
+	for tilemap in tilemaps:
+		var tm_path = str(get_tree().current_scene.get_path_to(tilemap))
+		save_dict["tilemaps"][tm_path] = {
+			"positions": var_to_str(tilemap._tile_positions),
+			"uv_rects": var_to_str(tilemap._tile_uv_rects),
+			"atlas_source_ids": var_to_str(tilemap._tile_atlas_source_ids),
+			"atlas_coords": var_to_str(tilemap._tile_atlas_coords),
+			"flags": var_to_str(tilemap._tile_flags),
+			"transform_indices": var_to_str(tilemap._tile_transform_indices),
+			"transform_data": var_to_str(tilemap._tile_transform_data),
+			"custom_transforms": var_to_str(tilemap._tile_custom_transforms),
+			"anim_indices": var_to_str(tilemap._tile_anim_indices),
+			"anim_data": var_to_str(tilemap._tile_anim_data)
+		}
 	var arquivo = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	arquivo.store_string(JSON.stringify(save_dict, "\t"))
 	print("💾 Jogo Salvo com Sucesso! Caminho: ", SAVE_PATH)
@@ -66,7 +83,7 @@ func load_game():
 	# 1. Primeiro, apagamos todas as árvores que estão no mapa atualmente.
 	# (Isso evita que o mapa fique com árvores duplicadas quando você der load)
 	for node in save_nodes:
-		if not node is Player:
+		if not node is Player and not node.has_method("_rebuild_chunks_from_saved_data"):
 			node.queue_free()
 			
 	# 2. Agora, lemos o JSON e "plantamos" tudo o que estava salvo
@@ -84,4 +101,33 @@ func load_game():
 					if novo_objeto.has_method("load_save_data"):
 						novo_objeto.load_save_data(obj_data)
 						
+	# --- CARREGAR TILEMAPS ---
+	# Backward compatibility: formato antigo
+	if save_dict.has("tilemap") and not save_dict["tilemap"].is_empty():
+		var tilemap = get_tree().current_scene.get_node_or_null("TileMapLayer3D")
+		if tilemap:
+			_restore_tilemap_data(tilemap, save_dict["tilemap"])
+			
+	# Novo formato: múltiplos tilemaps baseados no node_path
+	if save_dict.has("tilemaps") and not save_dict["tilemaps"].is_empty():
+		for tm_path in save_dict["tilemaps"].keys():
+			var tilemap = get_tree().current_scene.get_node_or_null(tm_path)
+			if tilemap and tilemap.has_method("_rebuild_chunks_from_saved_data"):
+				_restore_tilemap_data(tilemap, save_dict["tilemaps"][tm_path])
+			
 	print("📂 Jogo Carregado com Sucesso!")
+
+func _restore_tilemap_data(tilemap: Node, tdata: Dictionary):
+	if tdata.has("positions"): tilemap._tile_positions = str_to_var(tdata["positions"])
+	if tdata.has("uv_rects"): tilemap._tile_uv_rects = str_to_var(tdata["uv_rects"])
+	if tdata.has("atlas_source_ids"): tilemap._tile_atlas_source_ids = str_to_var(tdata["atlas_source_ids"])
+	if tdata.has("atlas_coords"): tilemap._tile_atlas_coords = str_to_var(tdata["atlas_coords"])
+	if tdata.has("flags"): tilemap._tile_flags = str_to_var(tdata["flags"])
+	if tdata.has("transform_indices"): tilemap._tile_transform_indices = str_to_var(tdata["transform_indices"])
+	if tdata.has("transform_data"): tilemap._tile_transform_data = str_to_var(tdata["transform_data"])
+	if tdata.has("custom_transforms"): tilemap._tile_custom_transforms = str_to_var(tdata["custom_transforms"])
+	if tdata.has("anim_indices"): tilemap._tile_anim_indices = str_to_var(tdata["anim_indices"])
+	if tdata.has("anim_data"): tilemap._tile_anim_data = str_to_var(tdata["anim_data"])
+	
+	tilemap.clear_highlights()
+	tilemap._rebuild_chunks_from_saved_data(true)

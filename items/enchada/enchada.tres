@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="HoeItemDefinition" format=3 uid="uid://giuy7pxqwy58"]
+
+[ext_resource type="Script" uid="uid://bfli5vje8lk8u" path="res://items/definitions/hoe_item_definition.gd" id="1_hoe"]
+[ext_resource type="Texture2D" uid="uid://mps6gixf810i" path="res://items/enchada/enchada.png" id="1_nfcmr"]
+
+[resource]
+script = ExtResource("1_hoe")
+target_terrain_id = 2
+id = "enchada"
+display_name = "Enchada"
+icon = ExtResource("1_nfcmr")
+metadata/_custom_type_script = "uid://buqjlq2vnh154"
