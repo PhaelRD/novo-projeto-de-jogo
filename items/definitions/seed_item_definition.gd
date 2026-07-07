@@ -27,8 +27,8 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 	# Cria a planta no mundo
 	if placement_scene:
 		var new_tree = placement_scene.instantiate()
-		if "growth_stage" in new_tree:
-			new_tree.growth_stage = 0
+		if "was_planted" in new_tree:
+			new_tree.was_planted = true
 
 		player.get_tree().current_scene.add_child(new_tree)
 		new_tree.global_position = Vector3(target_pos.x, base_y, target_pos.z)

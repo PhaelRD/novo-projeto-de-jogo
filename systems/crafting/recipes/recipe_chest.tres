@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c7nf45u5rbbah" path="res://systems/crafting/scripts/recipe_ingredient.gd" id="1_igred_script"]
 [ext_resource type="Resource" uid="uid://1k2d5jw4qg2q" path="res://items/chest/bau_item.tres" id="2_chest"]
-[ext_resource type="Resource" path="res://systems/crafting/recipes/ingredient_wood_for_chest.tres" id="3_ingredient"]
+[ext_resource type="Resource" uid="uid://vfy7eppwviij" path="res://systems/crafting/recipes/ingredient_wood_for_chest.tres" id="3_ingredient"]
 [ext_resource type="Script" uid="uid://blgqkxhfe24n0" path="res://systems/crafting/scripts/crafting_recipe.gd" id="4_script"]
 
 [resource]

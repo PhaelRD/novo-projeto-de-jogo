@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_kv0mb")
-valid_terrain_ids = Array[int]([1, 0])
+valid_terrain_ids = Array[int]([1, 0, 3])
 id = "chest"
 display_name = "Chest"
 icon = ExtResource("1_b0g0i")

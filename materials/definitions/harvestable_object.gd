@@ -5,6 +5,7 @@ class_name HarvestableObject
 @export var max_health: int = 10
 @export var required_tool: String = "" ## Ex: axe, pickaxe. Vazio = quebra com a mão
 @export var drops: Array[DropData] = []
+@export var shake_intensity: float = 0.08
 
 @export_category("Growth Settings")
 @export var can_grow: bool = false
@@ -18,6 +19,7 @@ var _current_health: int
 var _shake_tween: Tween
 var _original_positions: Dictionary = {}
 
+var was_planted: bool = false
 var growth_stage: int = 0
 var _days_in_current_stage: int = 0
 
@@ -27,14 +29,21 @@ func _ready() -> void:
 	
 	_current_health = max_health
 	
-	# Configura o estágio inicial caso tenha acabado de nascer do mapa (não da semente nem do save)
-	if initial_growth_stage == -1:
-		growth_stage = max(0, stages.size() - 1)
+	if was_planted:
+		growth_stage = 0
 	else:
-		growth_stage = initial_growth_stage
+		if initial_growth_stage == -1:
+			growth_stage = max(0, stages.size() - 1)
+		else:
+			growth_stage = initial_growth_stage
 	
 	for s in stages:
 		if s: _original_positions[s] = s.position
+		
+	# Fallback caso o array esteja vazio ou bugado: pega o primeiro Sprite filho
+	var fallback = _get_fallback_visual()
+	if fallback and not _original_positions.has(fallback):
+		_original_positions[fallback] = fallback.position
 		
 	_atualizar_visual_crescimento()
 	
@@ -68,16 +77,30 @@ func _shake_visual() -> void:
 	var base_pos = _original_positions.get(visual_node, Vector3.ZERO)
 	visual_node.position = base_pos
 	
+	# Compensa a escala global da raiz para que objetos escalados não tenham tremores exagerados
+	var strength: float = shake_intensity / max(0.1, scale.x)
+	var half_strength: float = strength * 0.6
+	
 	_shake_tween = create_tween()
-	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + 0.08, 0.04)
-	_shake_tween.tween_property(visual_node, "position:x", base_pos.x - 0.08, 0.04)
-	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + 0.05, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + strength, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x - strength, 0.04)
+	_shake_tween.tween_property(visual_node, "position:x", base_pos.x + half_strength, 0.04)
 	_shake_tween.tween_property(visual_node, "position:x", base_pos.x, 0.04)
 
 func _get_current_visual() -> Node3D:
-	if stages.is_empty(): return null
+	if stages.is_empty(): return _get_fallback_visual()
 	var idx = clamp(growth_stage, 0, stages.size() - 1)
-	return stages[idx]
+	var node = stages[idx]
+	
+	if node: return node
+	
+	return _get_fallback_visual()
+
+func _get_fallback_visual() -> Node3D:
+	for c in get_children():
+		if c is Sprite3D or c is MeshInstance3D:
+			return c
+	return null
 
 func _break_object() -> void:
 	if not can_grow or growth_stage >= stages.size() - 1:

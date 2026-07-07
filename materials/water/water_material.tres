@@ -1,0 +1,26 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://d0r835tc001vq"]
+
+[ext_resource type="Shader" uid="uid://3ogauk4row7c" path="res://materials/water/water.gdshader" id="1_water"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_brqpf"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n6k3h"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_water")
+shader_parameter/surfaceNoise = SubResource("NoiseTexture2D_n6k3h")
+shader_parameter/distortNoise = SubResource("NoiseTexture2D_brqpf")
+shader_parameter/beer_factor = 0.8
+shader_parameter/foam_distance = 0.01
+shader_parameter/foam_max_distance = 0.4
+shader_parameter/foam_min_distance = 0.04
+shader_parameter/foam_color = Color(1, 1, 1, 1)
+shader_parameter/surface_noise_tiling = Vector2(1, 4)
+shader_parameter/surface_noise_scroll = Vector3(0.03, 0.03, 0)
+shader_parameter/surface_noise_cutoff = 0.777
+shader_parameter/surface_distortion_amount = 0.27
+shader_parameter/_DepthGradientShallow = Color(0.325, 0.807, 0.971, 0.725)
+shader_parameter/_DepthGradientDeep = Color(0.086, 0.407, 1, 0.749)
+shader_parameter/_DepthMaxDistance = 1.0
+shader_parameter/_DepthFactor = 1.0
