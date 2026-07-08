@@ -15,6 +15,8 @@ class_name Player
 @onready var interaction:     InteractionComponent   = $InteractionComponent
 @onready var animated_sprite                         = $AnimatedSprite3D
 @onready var stamina_bar:     StaminaBar             = $CanvasLayer/StaminaBar
+@onready var wallet:          WalletComponent        = $WalletComponent
+@onready var _wallet_ui:      PanelContainer         = $CanvasLayer/WalletDisplayAnchor/WalletUI
 
 # --- Componentes novos (definidos na cena) ---
 @onready var _hotbar_input: HotbarInputComponent     = $HotbarInputComponent
@@ -50,6 +52,10 @@ func _ready() -> void:
 	var pickup = get_node_or_null("PickupComponent") as PickupComponent
 	if pickup:
 		pickup._inventory_component = inventory_component
+
+	# Conecta a carteira à sua UI
+	if wallet and _wallet_ui and _wallet_ui.has_method("connect_wallet"):
+		_wallet_ui.connect_wallet(wallet)
 
 	# Inventário
 	if inventory_component:
@@ -187,7 +193,8 @@ func get_save_data() -> Dictionary:
 		"pos_y": global_position.y,
 		"pos_z": global_position.z,
 		"inventory": inv_data,
-		"stamina": stamina_bar.get_save_data() if stamina_bar else 100
+		"stamina": stamina_bar.get_save_data() if stamina_bar else 100,
+		"wallet": wallet.get_save_data() if wallet else 0
 	}
 
 func load_save_data(dados: Dictionary) -> void:
@@ -196,6 +203,9 @@ func load_save_data(dados: Dictionary) -> void:
 
 	if stamina_bar:
 		stamina_bar.load_save_data(dados.get("stamina", stamina_bar.max_stamina))
+
+	if wallet:
+		wallet.load_save_data(dados.get("wallet", wallet.starting_balance))
 
 	if dados.has("inventory"):
 		var inv: Inventory = inventory_component.get_inventory()

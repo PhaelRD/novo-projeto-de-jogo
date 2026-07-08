@@ -9,4 +9,7 @@ id = "pimenta"
 display_name = "Pimenta"
 icon = ExtResource("1_upgmc")
 max_stack_size = 99
+is_sellable = true
+base_sell_price = 50
+base_buy_price = 100
 metadata/_custom_type_script = "uid://ca7vciupw21aq"

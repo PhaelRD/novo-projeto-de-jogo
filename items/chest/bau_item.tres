@@ -11,3 +11,6 @@ id = "chest"
 display_name = "Chest"
 icon = ExtResource("1_b0g0i")
 placement_scene = ExtResource("2_kv0mb")
+is_sellable = true
+base_sell_price = 30
+base_buy_price = 50

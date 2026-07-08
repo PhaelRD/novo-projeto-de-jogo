@@ -9,4 +9,6 @@ id = "madeira"
 display_name = "Madeira"
 icon = ExtResource("1_8w55v")
 max_stack_size = 99
+base_sell_price = 10
+base_buy_price = 20
 metadata/_custom_type_script = "uid://buqjlq2vnh154"

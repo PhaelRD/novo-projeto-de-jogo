@@ -11,3 +11,6 @@ id = "maca"
 display_name = "Maçã"
 icon = ExtResource("1_icon")
 max_stack_size = 99
+is_sellable = true
+base_sell_price = 10
+base_buy_price = 20

@@ -6,20 +6,31 @@
 [ext_resource type="Script" uid="uid://dghymmd6grgdm" path="res://materials/definitions/drop_entry.gd" id="3_8qx84"]
 [ext_resource type="Texture2D" uid="uid://ce6uhfstbihre" path="res://materials/pimenteira/Sprite-0003.png" id="3_fh22k"]
 [ext_resource type="Texture2D" uid="uid://dmvx173kjkfcp" path="res://materials/pimenteira/Sprite-0004.png" id="4_71irs"]
-[ext_resource type="Resource" uid="uid://mds7fvcc5ske" path="res://items/pimenta/pimenta.tres" id="4_rfsmd"]
+[ext_resource type="Script" uid="uid://cc5pdv5w8d2hs" path="res://materials/definitions/weighted_drop_pool.gd" id="4_qppai"]
+[ext_resource type="Script" uid="uid://dqnkeub63tyqx" path="res://materials/definitions/weighted_entry.gd" id="4_rfsmd"]
 [ext_resource type="Texture2D" uid="uid://cut2h50exkby1" path="res://materials/pimenteira/Sprite-0005.png" id="5_qppai"]
+[ext_resource type="Resource" uid="uid://mds7fvcc5ske" path="res://items/pimenta/pimenta.tres" id="5_x106g"]
 [ext_resource type="Texture2D" uid="uid://c8amrj6j6anny" path="res://materials/pimenteira/Sprite-0006.png" id="6_8qx84"]
 
-[sub_resource type="Resource" id="Resource_e880y"]
+[sub_resource type="Resource" id="Resource_phmhw"]
+script = ExtResource("4_rfsmd")
+item = ExtResource("5_x106g")
+metadata/_custom_type_script = "uid://dqnkeub63tyqx"
+
+[sub_resource type="Resource" id="Resource_8qx84"]
+script = ExtResource("4_qppai")
+entries = Array[ExtResource("4_rfsmd")]([SubResource("Resource_phmhw")])
+
+[sub_resource type="Resource" id="Resource_71irs"]
 script = ExtResource("3_8qx84")
-item = ExtResource("4_rfsmd")
+quality_pool = SubResource("Resource_8qx84")
 amount = 3
 metadata/_custom_type_script = "uid://dghymmd6grgdm"
 
-[sub_resource type="Resource" id="Resource_4dgwy"]
+[sub_resource type="Resource" id="Resource_grofb"]
 script = ExtResource("2_qppai")
 harvest_stage = 3
-items = Array[ExtResource("3_8qx84")]([SubResource("Resource_e880y")])
+items = Array[ExtResource("3_8qx84")]([SubResource("Resource_71irs")])
 metadata/_custom_type_script = "uid://c2nvbu3l5w10v"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_grofb"]
@@ -29,6 +40,7 @@ size = Vector3(1.0673828, 1, 1)
 script = ExtResource("1_v5rta")
 max_health = 1
 can_grow = true
+days_per_stage = 3
 initial_growth_stage = 0
 stages = [NodePath("Stage0"), NodePath("Stage1"), NodePath("Stage2"), NodePath("Stage3"), NodePath("Stage4")]
 needs_water = true
@@ -37,7 +49,7 @@ regrow_stage = 1
 allowed_seasons = Array[bool]([true, false, false, false])
 wilt_stage = 4
 passthrough = true
-staged_drops = Array[ExtResource("2_qppai")]([SubResource("Resource_4dgwy")])
+staged_drops = Array[ExtResource("2_qppai")]([SubResource("Resource_grofb")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1694973613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)

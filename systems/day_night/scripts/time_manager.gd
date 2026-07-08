@@ -7,7 +7,7 @@ const SLEEP_HOUR      : float = 2.0   # hora que força o novo dia (2h da manhã
 
 # 1 segundo real = 1 minuto in-game
 # Um dia cobre 20h in-game (6h → 2h) → 20×60 = 1200 segundos = 20 min reais ✓
-const TIME_SCALE : float = 250.0
+const TIME_SCALE : float = 1.0
 
 const SEASON_NAMES := ["Primavera", "Verão", "Outono", "Inverno"]
 const RAIN_CHANCES : Array[float] = [0.4, 0.2, 0.3, 0.1] # Chances de chuva por estação

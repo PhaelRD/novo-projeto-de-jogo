@@ -13,4 +13,7 @@ display_name = "Semente"
 icon = ExtResource("1_rchyl")
 max_stack_size = 99
 placement_scene = ExtResource("2_oyser")
+is_sellable = true
+base_sell_price = 10
+base_buy_price = 20
 metadata/_custom_type_script = "uid://buqjlq2vnh154"

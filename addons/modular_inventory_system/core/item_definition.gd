@@ -34,6 +34,11 @@ extends Resource
 
 @export var custom_metadata: Dictionary = {}
 
+@export_group("Economy")
+@export var is_sellable: bool = false
+@export var base_sell_price: int = 0
+@export var base_buy_price: int = 0
+
 var _cached_logic: ItemLogic = null 
 
 func is_broken(current_durability: int) -> bool:

@@ -245,9 +245,10 @@ func _release_drops() -> void:
 		for entry in sd.items:
 			if not entry: continue
 			if randf() <= entry.drop_chance:
-				var drop_item = entry.get_item()
-				if drop_item:
-					for i in range(entry.amount):
+				# Cada unidade rola o pool individualmente → qualidades podem ser diferentes
+				for i in range(entry.amount):
+					var drop_item = entry.get_item()
+					if drop_item:
 						_spawn_drop(drop_item)
 
 func _spawn_drop(item: ItemDefinition) -> void:

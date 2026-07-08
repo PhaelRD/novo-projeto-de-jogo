@@ -19,6 +19,8 @@
 [ext_resource type="Script" uid="uid://beomt1vu3hv0i" path="res://player/pickup_component.gd" id="12_pickup"]
 [ext_resource type="Script" uid="uid://c5l0j0nhnyqh" path="res://player/hotbar_input_component.gd" id="13_hotbar"]
 [ext_resource type="Script" uid="uid://db1ed46g4mnyk" path="res://player/placement_ghost_component.gd" id="14_ghost"]
+[ext_resource type="Script" uid="uid://dk2vuv72qlliy" path="res://player/wallet_component.gd" id="15_wallet"]
+[ext_resource type="PackedScene" path="res://player/wallet_ui.tscn" id="16_walletui"]
 
 [sub_resource type="CapsuleShape3D" id="2"]
 height = 1.8
@@ -293,6 +295,25 @@ script = ExtResource("8_5qrx2")
 visible = false
 inventory_component = NodePath("../../InventoryComponent")
 
+[node name="WalletDisplayAnchor" type="Control" parent="CanvasLayer" unique_id=300000011]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -145.0
+offset_top = 100.0
+offset_right = -10.0
+offset_bottom = 140.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="WalletUI" parent="CanvasLayer/WalletDisplayAnchor" unique_id=300000012 instance=ExtResource("16_walletui")]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+
 [node name="PickupArea" type="Area3D" parent="." unique_id=1433529411]
 collision_layer = 0
 
@@ -326,5 +347,9 @@ script = ExtResource("13_hotbar")
 
 [node name="PlacementGhostComponent" type="Node" parent="." unique_id=300000003]
 script = ExtResource("14_ghost")
+
+[node name="WalletComponent" type="Node" parent="." unique_id=300000010]
+script = ExtResource("15_wallet")
+starting_balance = 500
 
 [connection signal="body_entered" from="PickupArea" to="PickupComponent" method="_on_body_entered"]
