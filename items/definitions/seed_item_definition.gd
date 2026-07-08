@@ -4,10 +4,30 @@ class_name SeedItemDefinition
 @export_category("Configurações de Plantio")
 @export var valid_terrain_ids: Array[int] = [0]  ## IDs do Terrain Set 0 (ex: 0 = Terra Fértil)
 @export var stamina_cost: int = 2
+@export_category("Estações Permitidas")
+@export var plant_in_spring: bool = true
+@export var plant_in_summer: bool = true
+@export var plant_in_autumn: bool = true
+@export var plant_in_winter: bool = true
 
 func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 	if not player.stamina_bar.has_energy(stamina_cost):
 		print("Estou muito cansado para plantar...")
+		return false
+
+	# Verifica se a estação atual permite o plantio
+	var current_season = TimeManager.current_season
+	var can_plant: bool = false
+	match current_season:
+		0: can_plant = plant_in_spring
+		1: can_plant = plant_in_summer
+		2: can_plant = plant_in_autumn
+		3: can_plant = plant_in_winter
+		
+	if not can_plant:
+		var season_names = ["Primavera", "Verão", "Outono", "Inverno"]
+		var current_name = season_names[current_season] if current_season >= 0 and current_season < 4 else "Desconhecida"
+		print("Semente falhou! Esta semente não pode ser plantada na estação atual (", current_name, ").")
 		return false
 
 	var target_pos = target_info.get("position", Vector3.ZERO)

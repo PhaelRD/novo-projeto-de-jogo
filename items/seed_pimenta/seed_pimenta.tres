@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SeedItemDefinition" format=3 uid="uid://d2fkg6p6aw26w"]
+
+[ext_resource type="Texture2D" uid="uid://beu3irknft1yk" path="res://items/seed_pimenta/seed_pimenta.png" id="1_lsfen"]
+[ext_resource type="PackedScene" uid="uid://dpimenteira" path="res://materials/pimenteira/pimenteira.tscn" id="2_oyhnm"]
+[ext_resource type="Script" uid="uid://h73okiifsswt" path="res://items/definitions/seed_item_definition.gd" id="3_chbja"]
+
+[resource]
+script = ExtResource("3_chbja")
+valid_terrain_ids = Array[int]([2])
+plant_in_summer = false
+plant_in_autumn = false
+plant_in_winter = false
+id = "semente de pimenta"
+display_name = "Semente de Pimenta"
+icon = ExtResource("1_lsfen")
+max_stack_size = 99
+placement_scene = ExtResource("2_oyhnm")
+metadata/_custom_type_script = "uid://buqjlq2vnh154"

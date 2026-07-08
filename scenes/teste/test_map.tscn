@@ -107,7 +107,7 @@ shader_parameter/_DepthFactor = 1.0
 script = ExtResource("5")
 
 [node name="SpawnPoint" type="Marker3D" parent="." unique_id=1630233059]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7186174, 3, -3.2876816)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.10444, 0.31974292, -25.186924)
 
 [node name="DayNightCycle" parent="." unique_id=1386699038 instance=ExtResource("10_u56q5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.290747, 5.3766966, 14.224437)
@@ -129,13 +129,13 @@ _quad_chunks = [NodePath("SquareChunk_R-1_-1_-2_C1"), NodePath("SquareChunk_R-2_
 _triangle_chunks = [NodePath("TriangleChunk_R-2_0_-2_C1"), NodePath("TriangleChunk_R-1_0_-2_C1"), NodePath("TriangleChunk_R-2_0_-1_C1"), NodePath("TriangleChunk_R0_0_-2_C1"), NodePath("TriangleChunk_R1_0_-2_C1")]
 metadata/_custom_type_script = "uid://4kv8f8ejgwqn"
 
-[node name="Node3D" type="Node3D" parent="TileMapLayer3D" unique_id=1136685197]
+[node name="DetalhesDoSolo" type="Node3D" parent="TileMapLayer3D" unique_id=1136685197]
 script = ExtResource("11_4ry1s")
 grass_density = 0.2
 flower_density = 0.2
-rock_density = 0.02
+rock_density = 0.1
 rock_scale_min = 0.1
-rock_scale_max = 0.15000000000000002
+rock_scale_max = 0.2
 wind_speed = 2.0
 wind_strength = 0.2
 
@@ -207,17 +207,83 @@ shape = SubResource("ConcavePolygonShape3D_pij8y")
 script = ExtResource("10_qcxay")
 region_key = Vector3i(1, 0, -2)
 
-[node name="Stone" parent="TileMapLayer3D" unique_id=1921168272 instance=ExtResource("12_fbwh4")]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 14.368416, 0.38026357, -18.359455)
-
 [node name="House" parent="." unique_id=1060009456 instance=ExtResource("11_fokk6")]
 transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 27.947126, 2.4454074, -29.147469)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=543331626]
+[node name="Lago" type="MeshInstance3D" parent="." unique_id=543331626]
 transform = Transform3D(2.0254579, 0, 0, 0, 1, 0, 0, 0, 2.5306, 30.067453, -0.15158486, -11.533643)
 material_override = ExtResource("12_132xs")
 mesh = SubResource("PlaneMesh_grofb")
 surface_material_override/0 = SubResource("ShaderMaterial_4ry1s")
 
 [node name="Tree" parent="." unique_id=2004484642 instance=ExtResource("11_fbwh4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.507489, 0.38260007, -14.545478)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.543694, 0.38260013, -23.466291)
+
+[node name="Tree2" parent="." unique_id=1388192300 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.636543, 0.38260013, -21.41934)
+
+[node name="Stone" parent="." unique_id=1921168272 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 22.512318, 0.38026345, -23.301687)
+
+[node name="Tree3" parent="." unique_id=733417763 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.53784, 0.38259977, -20.383064)
+
+[node name="Tree4" parent="." unique_id=197675294 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.517351, 0.3825999, -16.521832)
+
+[node name="Tree5" parent="." unique_id=2026557910 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.55406, 0.3825999, -17.411482)
+
+[node name="Stone2" parent="." unique_id=2132735499 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 34.59854, 0.38026357, -19.373543)
+
+[node name="Stone3" parent="." unique_id=1132916800 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 34.44673, 0.38026333, -18.337824)
+
+[node name="Tree6" parent="." unique_id=1531026873 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.600733, 0.38260013, -18.459568)
+
+[node name="Tree7" parent="." unique_id=409369821 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.644318, 0.38260013, -16.755953)
+
+[node name="Tree8" parent="." unique_id=398017335 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.603807, 0.38260013, -20.451828)
+
+[node name="Tree9" parent="." unique_id=1255494876 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.543264, 0.38259965, -21.482018)
+
+[node name="Stone4" parent="." unique_id=346789423 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 27.376507, 0.3802637, -18.37523)
+
+[node name="Stone5" parent="." unique_id=1638338594 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 23.595123, 0.3802637, -19.443031)
+
+[node name="Stone6" parent="." unique_id=1922777199 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 30.376078, 0.3802637, -21.316917)
+
+[node name="Stone7" parent="." unique_id=1736506998 instance=ExtResource("12_fbwh4")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 28.458075, 0.3802637, -16.53948)
+
+[node name="Tree10" parent="." unique_id=1002730287 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.49268, 0.3826, -17.395216)
+
+[node name="Tree11" parent="." unique_id=372117518 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.465328, 0.38259953, -15.539712)
+
+[node name="Tree12" parent="." unique_id=970879069 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.466955, 0.3826, -15.514695)
+
+[node name="Tree13" parent="." unique_id=1983642076 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24.446463, 0.3826, -14.439821)
+
+[node name="Tree14" parent="." unique_id=2124500359 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.635677, 0.3826, -17.521856)
+
+[node name="Tree15" parent="." unique_id=1373730525 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18.854485, 0.3826, -20.321663)
+
+[node name="Tree16" parent="." unique_id=1404313598 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.916975, 0.3826, -28.13018)
+
+[node name="Tree17" parent="." unique_id=610666476 instance=ExtResource("11_fbwh4")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.753181, 0.3826, -28.202507)

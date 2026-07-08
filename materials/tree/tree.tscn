@@ -1,25 +1,32 @@
 [gd_scene format=3 uid="uid://dnirhstm83bik"]
 
 [ext_resource type="Script" uid="uid://djswwmv5d3idc" path="res://materials/definitions/harvestable_object.gd" id="1_v5rta"]
-[ext_resource type="Script" uid="uid://6lpoo50goji1" path="res://materials/definitions/drop_data.gd" id="2_66brq"]
+[ext_resource type="Script" uid="uid://c2nvbu3l5w10v" path="res://materials/definitions/staged_drop_data.gd" id="2_66brq"]
 [ext_resource type="Resource" uid="uid://cfu6ejp5bl530" path="res://items/madeira/madeira.tres" id="2_ind6k"]
 [ext_resource type="Texture2D" uid="uid://cv2cvqlmnawcn" path="res://materials/tree/Sprite-0001.png" id="3_6vbnm"]
 [ext_resource type="Resource" uid="uid://db5dmnbqmkxfb" path="res://items/maça/maça.tres" id="3_66brq"]
+[ext_resource type="Script" uid="uid://dghymmd6grgdm" path="res://materials/definitions/drop_entry.gd" id="3_lbmjr"]
 [ext_resource type="Texture2D" uid="uid://42nwry8ys2ip" path="res://materials/tree/Sprite-0002.png" id="4_bcqui"]
 [ext_resource type="Texture2D" uid="uid://cmg1mg3vd6r1m" path="res://materials/tree/Sprite-0003.png" id="5_bgygo"]
 
 [sub_resource type="Resource" id="Resource_66brq"]
-script = ExtResource("2_66brq")
+script = ExtResource("3_lbmjr")
 item = ExtResource("2_ind6k")
 amount = 4
 
-[sub_resource type="Resource" id="Resource_lbmjr"]
-script = ExtResource("2_66brq")
+[sub_resource type="Resource" id="Resource_7ch8g"]
+script = ExtResource("3_lbmjr")
 item = ExtResource("3_66brq")
 
-[sub_resource type="Resource" id="Resource_fvtw0"]
-script = ExtResource("2_66brq")
+[sub_resource type="Resource" id="Resource_jvc1u"]
+script = ExtResource("3_lbmjr")
 item_path = "uid://c6b2btv3phs27"
+
+[sub_resource type="Resource" id="Resource_gpj1w"]
+script = ExtResource("2_66brq")
+harvest_stage = 2
+items = Array[ExtResource("3_lbmjr")]([SubResource("Resource_66brq"), SubResource("Resource_7ch8g"), SubResource("Resource_jvc1u")])
+metadata/_custom_type_script = "uid://c2nvbu3l5w10v"
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_uy8cy"]
 
@@ -27,9 +34,10 @@ item_path = "uid://c6b2btv3phs27"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3600703, 0)
 script = ExtResource("1_v5rta")
 required_tool = "axe"
-drops = Array[ExtResource("2_66brq")]([SubResource("Resource_66brq"), SubResource("Resource_lbmjr"), SubResource("Resource_fvtw0")])
 can_grow = true
+days_per_stage = 2
 stages = [NodePath("SpriteSeed"), NodePath("SpriteSprout"), NodePath("SpriteAdult")]
+staged_drops = Array[ExtResource("2_66brq")]([SubResource("Resource_gpj1w")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=357271246]
 transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0.38915157, 0)

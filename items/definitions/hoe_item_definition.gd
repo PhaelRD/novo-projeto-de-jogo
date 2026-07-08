@@ -29,6 +29,16 @@ func use(player: CharacterBody3D, target_info: Dictionary) -> bool:
 
 	if target_info.get("is_blocked", false):
 		return false
+		
+	# ── 0. Verificar se há objetos sobre o solo (árvores, pedras, etc) ────────
+	if "interaction" in player and player.interaction and player.interaction.interaction_area:
+		var bodies = player.interaction.interaction_area.get_overlapping_bodies()
+		for b in bodies:
+			if b == player:
+				continue
+			if b.is_in_group("interactable") or b.is_in_group("obstacle"):
+				print("Enchada: O solo está ocupado por um objeto (", b.name, ")")
+				return false
 
 	# ── 1. Encontrar o TileMapLayer3D subindo a hierarquia do collider ─────────
 	var tile_map = _get_tile_map_from_collider(collider)

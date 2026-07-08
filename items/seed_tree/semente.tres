@@ -7,6 +7,7 @@
 [resource]
 script = ExtResource("3_2e78w")
 valid_terrain_ids = Array[int]([0, 3])
+stamina_cost = 1
 id = "semente"
 display_name = "Semente"
 icon = ExtResource("1_rchyl")

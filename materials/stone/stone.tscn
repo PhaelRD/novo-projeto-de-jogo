@@ -2,23 +2,30 @@
 
 [ext_resource type="Texture2D" uid="uid://qkgaupslcsst" path="res://materials/stone/rock_36.png" id="1_mhen8"]
 [ext_resource type="Script" uid="uid://djswwmv5d3idc" path="res://materials/definitions/harvestable_object.gd" id="1_u4s1e"]
-[ext_resource type="Script" uid="uid://6lpoo50goji1" path="res://materials/definitions/drop_data.gd" id="2_fe3ka"]
+[ext_resource type="Script" uid="uid://c2nvbu3l5w10v" path="res://materials/definitions/staged_drop_data.gd" id="2_ga1d5"]
+[ext_resource type="Script" uid="uid://dghymmd6grgdm" path="res://materials/definitions/drop_entry.gd" id="3_3es1d"]
 [ext_resource type="Resource" uid="uid://c1vh014whti2i" path="res://items/stone/stone.tres" id="3_ga1d5"]
 
-[sub_resource type="Resource" id="Resource_n6twg"]
-script = ExtResource("2_fe3ka")
+[sub_resource type="Resource" id="Resource_arm2b"]
+script = ExtResource("3_3es1d")
 item = ExtResource("3_ga1d5")
 amount = 2
-metadata/_custom_type_script = "uid://6lpoo50goji1"
+
+[sub_resource type="Resource" id="Resource_p5t56"]
+script = ExtResource("2_ga1d5")
+harvest_stage = 0
+items = Array[ExtResource("3_3es1d")]([SubResource("Resource_arm2b")])
+metadata/_custom_type_script = "uid://c2nvbu3l5w10v"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_grofb"]
 
 [node name="Stone" type="StaticBody3D" unique_id=1921168272 node_paths=PackedStringArray("stages")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 script = ExtResource("1_u4s1e")
+max_health = 5
 required_tool = "picareta"
-drops = Array[ExtResource("2_fe3ka")]([SubResource("Resource_n6twg")])
 stages = [NodePath("Sprite3D")]
+staged_drops = Array[ExtResource("2_ga1d5")]([SubResource("Resource_p5t56")])
 
 [node name="Sprite3D" type="Sprite3D" parent="." unique_id=2074602746]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, -0.021721184, 0)
