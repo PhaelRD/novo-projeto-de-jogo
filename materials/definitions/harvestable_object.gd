@@ -61,10 +61,14 @@ var _was_watered_today: bool = false
 ## Indica se a planta murchou. Morte permanente — não revive.
 var _is_wilted: bool = false
 
+var _water_particles: GPUParticles3D
+
 # ─── Ciclo de Vida ─────────────────────────────────────────────────────────────
 func _ready() -> void:
 	add_to_group("persist")
 	add_to_group("interactable")
+	
+	_create_water_particles()
 	
 	_current_health = max_health
 	
@@ -84,6 +88,7 @@ func _ready() -> void:
 		_original_positions[fallback] = fallback.position
 		
 	_atualizar_visual_crescimento()
+	_update_water_particles()
 	
 	# Configura a layer de colisão conforme o modo passthrough
 	if passthrough:
@@ -147,6 +152,41 @@ func water() -> void:
 		return
 	_was_watered_today = true
 	print(name, ": foi regada hoje ✓")
+	_update_water_particles()
+
+func _create_water_particles() -> void:
+	_water_particles = GPUParticles3D.new()
+	add_child(_water_particles)
+	_water_particles.position = Vector3(0, 0.4, 0) # Fica um pouco acima da base
+	
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(0.2, 0.05, 0.2)
+	mat.direction = Vector3(0, -1, 0)
+	mat.initial_velocity_min = 0.5
+	mat.initial_velocity_max = 0.8
+	mat.gravity = Vector3(0, -2, 0)
+	
+	_water_particles.process_material = mat
+	
+	var mesh = QuadMesh.new()
+	mesh.size = Vector2(0.08, 0.08) # Gotas maiores
+	
+	var spatial_mat = StandardMaterial3D.new()
+	spatial_mat.albedo_color = Color(0.6, 0.9, 1.0, 0.95) # Azul mais ciano, brilhante e opaco
+	spatial_mat.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	spatial_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	spatial_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mesh.material = spatial_mat
+	
+	_water_particles.draw_pass_1 = mesh
+	_water_particles.amount = 8 # Mais gotinhas caindo
+	_water_particles.lifetime = 0.6
+	_water_particles.emitting = false
+
+func _update_water_particles() -> void:
+	if is_instance_valid(_water_particles):
+		_water_particles.emitting = (_was_watered_today and can_grow and needs_water and not _is_wilted)
 
 # ─── Virada de Dia ─────────────────────────────────────────────────────────────
 func _on_new_day(_day: int, season: int, _year: int) -> void:
@@ -159,27 +199,24 @@ func _on_new_day(_day: int, season: int, _year: int) -> void:
 		_wilt()
 		return
 	
-	# ── Chuva conta como rega automática ─────────────────────────────────────
+	# ── Crescimento (baseado na rega de ONTEM) ────────────────────────────────
+	if growth_stage < _final_growth_stage():
+		if needs_water and not _was_watered_today:
+			print(name, ": não foi regada ontem, crescimento pausado.")
+		else:
+			_days_in_current_stage += 1
+			if _days_in_current_stage >= days_per_stage:
+				_crescer()
+	
+	# Reseta o estado de rega para o dia que está começando
+	_was_watered_today = false
+	
+	# ── Chuva hoje conta como rega automática para o dia atual ───────────────
 	var tm = get_node_or_null("/root/TimeManager")
 	if tm and tm.is_raining:
 		_was_watered_today = true
-	
-	# ── Crescimento ───────────────────────────────────────────────────────────
-	if growth_stage >= _final_growth_stage():
-		return  # Já no estágio final
-	
-	# Se precisa de rega e não foi regada, não conta o dia
-	if needs_water and not _was_watered_today:
-		print(name, ": não foi regada hoje, crescimento pausado.")
-		_was_watered_today = false
-		return
-	
-	_days_in_current_stage += 1
-	if _days_in_current_stage >= days_per_stage:
-		_crescer()
-	
-	# Reseta o estado de rega para o dia seguinte
-	_was_watered_today = false
+		
+	_update_water_particles()
 
 func _is_season_allowed(season: int) -> bool:
 	if allowed_seasons.size() != 4:
@@ -229,6 +266,7 @@ func _break_object() -> void:
 		_current_health = max_health
 		_was_watered_today = false
 		_atualizar_visual_crescimento()
+		_update_water_particles()
 		print(name, ": colhido! Voltou ao estágio ", growth_stage, ".")
 	else:
 		queue_free()
@@ -353,13 +391,20 @@ func get_save_data() -> Dictionary:
 
 func load_save_data(dados: Dictionary) -> void:
 	global_position = Vector3(dados["pos_x"], dados["pos_y"], dados["pos_z"])
-	_current_health = dados.get("health", max_health)
-	growth_stage = dados.get("growth_stage", growth_stage)
-	_days_in_current_stage = dados.get("days_in_stage", 0)
-	_was_watered_today = dados.get("was_watered", false)
-	_is_wilted = dados.get("is_wilted", false)
+	if dados.has("health"):
+		_current_health = dados["health"]
+	if dados.has("growth_stage"):
+		growth_stage = dados["growth_stage"]
+	if dados.has("days_in_stage"):
+		_days_in_current_stage = dados["days_in_stage"]
+	if dados.has("was_watered"):
+		_was_watered_today = dados["was_watered"]
+	if dados.has("is_wilted"):
+		_is_wilted = dados["is_wilted"]
 	
 	if _is_wilted:
 		_wilt()
 	else:
 		_atualizar_visual_crescimento()
+	
+	_update_water_particles()

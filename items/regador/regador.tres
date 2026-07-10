@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WateringCanItemDefinition" format=3 uid="uid://n144sa87u1pc"]
+
+[ext_resource type="Texture2D" uid="uid://b5sw0e53n635g" path="res://items/regador/regador.png" id="1_regador"]
+[ext_resource type="Script" uid="uid://n1ttpl7xbw7d" path="res://items/definitions/watering_can_item_definition.gd" id="1_tsc08"]
+
+[resource]
+script = ExtResource("1_tsc08")
+stamina_cost = 5
+id = "regador"
+display_name = "Regador"
+icon = ExtResource("1_regador")
+has_durability = true
+max_durability = 25
+break_on_zero = false
+default_durability = 10
+metadata/_custom_type_script = "uid://buqjlq2vnh154"

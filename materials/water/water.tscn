@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://water_node_01"]
+
+[ext_resource type="Material" uid="uid://d0r835tc001vq" path="res://materials/water/water_material.tres" id="1_watermat"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_water"]
+size = Vector2(2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_water"]
+size = Vector3(2, 0.1, 2)
+
+[node name="Water" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = ExtResource("1_watermat")
+mesh = SubResource("PlaneMesh_water")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" groups=["interactable", "water_source"]]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+shape = SubResource("BoxShape3D_water")

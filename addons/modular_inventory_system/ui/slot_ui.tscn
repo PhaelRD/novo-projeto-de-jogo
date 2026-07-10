@@ -134,39 +134,40 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ru537")
 
 [node name="DurabilityBar" type="Control" parent="." unique_id=104538578]
 layout_mode = 1
-anchors_preset = 0
-offset_left = 2.0
-offset_top = 58.0
-offset_right = 62.0
-offset_bottom = 62.0
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -6.0
+offset_right = -4.0
+offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 0
-pivot_offset = Vector2(20, 20)
-mouse_filter = 1
+mouse_filter = 2
 
 [node name="DurabilityBackground" type="ColorRect" parent="DurabilityBar" unique_id=1442308425]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.5
-offset_top = -16.5
-offset_right = -15.5
-offset_bottom = -16.5
-grow_horizontal = 2
-
-[node name="DurabilityFill" type="ColorRect" parent="DurabilityBar" unique_id=1472498017]
-custom_minimum_size = Vector2(46, 3)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -31.5
-offset_top = -18.5
-offset_right = 14.5
-offset_bottom = -15.5
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.42352942, 0.42352942, 0.42352942, 1)
+color = Color(0.1, 0.1, 0.1, 0.8)
+mouse_filter = 2
+
+[node name="DurabilityFill" type="ColorRect" parent="DurabilityBar" unique_id=1472498017]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 40.0
+offset_bottom = 0.0
+grow_vertical = 2
+color = Color(0.423529, 0.423529, 0.423529, 1)
+mouse_filter = 2

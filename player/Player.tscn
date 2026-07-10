@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://giuy7pxqwy58" path="res://items/enchada/enchada.tres" id="5_uewl2"]
 [ext_resource type="Script" uid="uid://xf1twal6dn3g" path="res://addons/modular_inventory_system/ui/modular_hotbar.gd" id="6_aqcbf"]
 [ext_resource type="Resource" uid="uid://d2fkg6p6aw26w" path="res://items/seed_pimenta/seed_pimenta.tres" id="6_ofhxi"]
+[ext_resource type="Resource" uid="uid://n144sa87u1pc" path="res://items/regador/regador.tres" id="7_mlfor"]
 [ext_resource type="Script" uid="uid://bc463qt5ulfkv" path="res://player/stamina_bar.gd" id="8_5qrx2"]
 [ext_resource type="Script" uid="uid://4jhop52nu5lc" path="res://player/interaction_component.gd" id="9_5qrx2"]
 [ext_resource type="PackedScene" uid="uid://bwbeq0y7cv4cv" path="res://systems/crafting/ui/crafting_panel.tscn" id="9_b32pr"]
@@ -193,7 +194,7 @@ size = Vector2(1, 1)
 
 [node name="Player" type="CharacterBody3D" unique_id=755259553 groups=["player"]]
 script = ExtResource("1")
-starting_items = Array[ExtResource("2_w24id")]([ExtResource("3_mhpjh"), ExtResource("4_uewl2"), ExtResource("5_uewl2"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi")])
+starting_items = Array[ExtResource("2_w24id")]([ExtResource("3_mhpjh"), ExtResource("4_uewl2"), ExtResource("5_uewl2"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("6_ofhxi"), ExtResource("7_mlfor")])
 
 [node name="Player#CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1924977750]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.353904, 0)

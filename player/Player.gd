@@ -127,8 +127,9 @@ func _physics_process(delta: float) -> void:
 		).normalized()
 
 	var real_move_dir = movement.handle_movement(self, input_dir, delta)
+	var intended_dir = movement.transform_input(input_dir)
 	animations.update_animation(input_dir)
-	interaction.update_grid(global_position, real_move_dir)
+	interaction.update_grid(global_position, intended_dir)
 	_placement.update(global_position)
 
 # ==========================================
@@ -185,7 +186,8 @@ func get_save_data() -> Dictionary:
 				inv_data.append({
 					"index": i,
 					"item_path": slot.item.resource_path,
-					"count": slot.count
+					"count": slot.count,
+					"durability": slot.current_durability
 				})
 
 	return {
@@ -214,5 +216,7 @@ func load_save_data(dados: Dictionary) -> void:
 			for item_data in dados["inventory"]:
 				var item_res = load(item_data["item_path"]) as ItemDefinition
 				if item_res:
-					inv.set_slot(item_data["index"], item_res, item_data["count"])
+					var dur = item_data.get("durability", -1)
+					inv.slots[item_data["index"]].set_value(item_res, item_data["count"], dur)
+					inv.slot_changed.emit(item_data["index"])
 			if hotbar: _atualizar_visual_hotbar(hotbar.selected_index)

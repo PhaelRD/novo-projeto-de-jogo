@@ -7,7 +7,7 @@ class_name MovementComponent
 var _follow_camera: Camera3D = null
 
 func handle_movement(body: CharacterBody3D, input_dir: Vector3, delta: float) -> Vector3:
-	var move_dir = _transform_input_by_camera(input_dir)
+	var move_dir = transform_input(input_dir)
 	
 	# Prevenção de queda (Ledge Detection)
 	# Se estiver no chão (ou caindo), verifica se tem chão na direção do movimento
@@ -41,10 +41,11 @@ func _check_floor(body: CharacterBody3D, offset: Vector3) -> bool:
 	
 	var query = PhysicsRayQueryParameters3D.create(ray_from, ray_to)
 	query.exclude = [body.get_rid()]
+	query.collision_mask = 1 # Apenas Layer 1 (Mundo) é considerado chão
 	var result = space_state.intersect_ray(query)
 	return result.size() > 0
 
-func _transform_input_by_camera(input_dir: Vector3) -> Vector3:
+func transform_input(input_dir: Vector3) -> Vector3:
 	if not _follow_camera or input_dir == Vector3.ZERO:
 		return input_dir 
 	

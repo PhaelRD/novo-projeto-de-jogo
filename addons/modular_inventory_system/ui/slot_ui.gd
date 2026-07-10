@@ -10,7 +10,7 @@ signal tooltip_hidden()
 @export_node_path("Label") var count_label_path: NodePath = ^"CountLabel"
 @export_node_path("TextureRect") var placeholder_path: NodePath = ^"Placeholder"
 @export_node_path("Control") var durability_bar_path: NodePath = ^"DurabilityBar"
-@export_node_path("ColorRect") var durability_fill_path: NodePath = ^"DurabilityFill"
+@export_node_path("ColorRect") var durability_fill_path: NodePath = ^"DurabilityBar/DurabilityFill"
 
 var icon_rect: TextureRect
 var count_label: Label
@@ -167,7 +167,8 @@ func _update_durability_display(slot_data: SlotData) -> void:
 	var percent = clamp(float(current) / float(max), 0.0, 1.0)
 	
 	durability_bar.visible = true
-	durability_fill.size.x = durability_bar.size.x * percent
+	durability_fill.anchor_right = percent
+	durability_fill.offset_right = 0
 	durability_fill.color = Color.GREEN if percent > 0.5 else Color.YELLOW if percent > 0.25 else Color.RED
 	durability_fill.modulate.a = 0.3 if current <= 0 else 1.0
 
